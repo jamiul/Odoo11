@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<data noupdate="1">
+
+    <!-- Home Page -->
+<!--     <template id="homepage_body" inherit_id="website.homepage">
+        <xpath expr="//div" position="inside">
+            <div class="oe_structure">
+
+            </div>
+        </xpath>
+    </template> -->
+
+</data>
+</odoo>

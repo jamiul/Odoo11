@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+<template id="snippet_testimonial" name="Testimonial snippet">
+  <section class="snippet_testimonial">
+    <div class="container text-center">
+      <div class="row">
+        <div class="col-md-4">
+          <img alt="client" class="img-circle" src="/theme_tutorial/static/src/img/newyork.jpg" width="304" height="236"/>
+          <h3>Client Name</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-4">
+          <img alt="client" class="img-circle" src="/theme_tutorial/static/src/img/paris.jpg" width="304" height="236"/>
+          <h3>Client Name</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+        <div class="col-md-4">
+          <img alt="client" class="img-circle" src="/theme_tutorial/static/src/img/sanfran.jpg" width="304" height="236"/>
+          <h3>Client Name</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+     <template id="place_into_bar" inherit_id="website.snippets" name="Place into bar">
+         <xpath expr="//div[@id='snippet_effect']/div[@class='o_panel_body']" position="inside">
+         <t t-snippet="theme_tutorial.snippet_testimonial"
+          t-thumbnail="/theme_tutorial/static/src/img/ui/testimonials.png"/>
+        </xpath>
+    </template>
+</odoo>

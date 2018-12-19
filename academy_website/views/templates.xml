@@ -1,0 +1,64 @@
+<odoo>
+    <data>
+    
+        <template id="index">
+             <t t-call="website.layout">
+                <t t-set="title">School</t>
+                <div class="oe_structure">
+                    <div class="container">
+                        <t t-foreach="teachers" t-as="teacher">
+                        <div class="division">
+                        	<p><a t-attf-href="/academy_website/{{ slug(teacher) }}">
+                              <t t-esc="teacher.name"/></a>
+                            </p>
+                        </div>
+                         
+                        </t>
+                    </div>
+                </div>
+              
+            </t>
+            
+ <style>
+ .division {
+    background-color: lightgrey;
+    5px solid green;
+    padding: 25px; width: 300px;
+    border: 2
+    margin: 25px;
+    
+ }
+ </style>            
+</template>
+
+        <template id="biography">
+            <t t-call="website.layout">
+                <t t-set="title">Academy</t>
+                <div class="oe_structure"/>
+                <div class="oe_structure">
+                    <div class="container">
+                        <h3 t-field="person.name"/>
+                          <p>Last modified: <i t-field="person.write_date" t-options='{"widget": "relative"}'/></p>
+                          <p>Last modified: <i t-field="person.write_date" t-options='{"format": "long"}'/></p>
+                          <p>Last modified: <i t-field="person.write_date"/></p>
+                        <div t-field="person.biography"/>
+                    </div>
+                </div>
+                <div class="oe_structure"/>
+            </t>
+        </template>
+        
+        <template id="product_item_hide_no_price" inherit_id="website_sale.products_item">
+            <xpath expr="//div[hasclass('product_price')]/b" position="attributes">
+                <attribute name="t-if">product.price &gt; 0</attribute>
+            </xpath>
+        </template>
+        
+        <record id="website_sale.products_categories" model="ir.ui.view">
+            <field name="active" eval="True"/>
+        </record>
+        
+        
+
+    </data>
+</odoo>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+<!-- Customize header  -->
+<template id="custom_header" inherit_id="website.layout" name="Custom Header">
+
+  <!-- Assign an id  -->
+  <xpath expr="//div[@id='wrapwrap']/header" position="attributes">
+    <attribute name="id">my_header</attribute>
+  </xpath>
+
+  <!-- Add an element after the top menu  -->
+  <xpath expr="//div[@id='wrapwrap']/header/div" position="after">
+         <!-- Search form -->
+     <div class="row">
+        <div class="col-md-4 col-md-offset-3">
+            <form action="" class="search-form">
+                <div class="form-group has-feedback">
+            		<label for="search" class="sr-only">Search</label>
+            		<input type="text" class="form-control" name="search" id="search" placeholder="search">
+            		</input>
+              		<span class="glyphicon glyphicon-search form-control-feedback"></span>
+            	</div>
+            </form>
+        </div>
+      </div>
+  </xpath>
+</template>
+
+</odoo>

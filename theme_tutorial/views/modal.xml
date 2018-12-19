@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+	<template id="snippet_modal" name="Modal Snippet">
+	 <section class="snippet_modal">
+	  <div class="container">
+		  <h2>Modal Example</h2>
+		  <!-- Button to Open the Modal -->
+		  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+		    Open modal
+		  </button>
+
+			  <!-- The Modal -->
+			  <div class="modal" id="myModal">
+			    <div class="modal-dialog">
+			      <div class="modal-content">
+			      
+			        <!-- Modal Header -->
+			        <div class="modal-header">
+			          <h4 class="modal-title">Modal Heading</h4>
+			          <button type="button" class="close" data-dismiss="modal"></button>
+			        </div>
+			        
+			        <!-- Modal body -->
+			        <div class="modal-body">
+			          Modal body..
+			        </div>
+			        
+			        <!-- Modal footer -->
+			        <div class="modal-footer">
+			          <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+			        </div>
+			        
+			      </div>
+			    </div>
+			  </div> 
+			</div>
+	 </section>
+	</template>
+	<template id="my_modal_snippets" inherit_id="website.snippets" name="my modal snippets">
+  		<xpath expr="//div[@id='snippet_structure']/div[@class='o_panel_body']" position="inside">
+   		 <t t-snippet="theme_tutorial.snippet_modal"
+      		t-thumbnail="/theme_tutorial/static/src/img/ui/modal.jpg"/>
+  		</xpath>
+</template>
+</odoo>

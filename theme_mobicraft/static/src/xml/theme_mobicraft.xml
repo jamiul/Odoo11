@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates>
+    <t t-name="theme_mobicraft.mobicraft_theme_dynamic_product_category_slider">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal" contenteditable="False" role="dialog" style="z-index:2001" tabindex="1">
+            <div class="modal-dialog">
+                <div class="modal-content" id="s_media_block_modal">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Product/Category Slider Configuration</h4>
+                    </div>
+                    <div class="modal-body" contenteditable="false">
+                        <form class="form-horizontal container-fluid" role="form">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3 control-label" for="slider_type">Type</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="slider_type" name="slider_type"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" id="cancel">Cancel</button>
+                        <button class="btn btn-danger" data-dismiss="modal" id="pro_cat_sub_data">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="theme_mobicraft.mobicraft_theme_brands_slider_block">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal" contenteditable="False" role="dialog" style="z-index:2001" tabindex="1">
+            <div class="modal-dialog">
+                <div class="modal-content" id="s_media_block_modal">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Brands Slider Configuration</h4>
+                    </div>
+                    <div class="modal-body" contenteditable="false">
+                        <form class="form-horizontal container-fluid" role="form">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3 control-label" for="brand-count">Total Count</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="brand-count" placeholder="Enter Count" type="number"/>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3 control-label" for="product-label">Label</label>
+                                <div class="col-sm-9">
+                                    <input class="form-control" id="brand-label" placeholder="Enter Label (for e.g: Our Brands)" required="required" type="text" value="Our Brands"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" id="cancel">Cancel</button>
+                        <button class="btn btn-danger" data-dismiss="modal" id="brand_sub_data" type="submit">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="theme_mobicraft.mobicraft_theme_blog_slider_block">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal" contenteditable="False" role="dialog" style="z-index:2001" tabindex="1">
+            <div class="modal-dialog">
+                <div class="modal-content" id="s_media_block_modal">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Blog Slider Configuration</h4>
+                    </div>
+                    <div class="modal-body" contenteditable="false">
+                        <form class="form-horizontal container-fluid" role="form">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3 control-label" for="blog_slider_type">Type</label>
+                                <div class="col-sm-7">
+                                    <select class="form-control" id="blog_slider_type" name="blog_slider_type"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" id="cancel">Cancel</button>
+                        <button class="btn btn-danger" data-dismiss="modal" id="blog_sub_data">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    <t t-name="theme_mobicraft.multi_product_custom_slider_block">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal" contenteditable="False" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content" id="s_media_block_modal">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Multi Product Slider Configuration</h4>
+                    </div>
+                    <div class="modal-body" contenteditable="false">
+                        <form class="form-horizontal container-fluid" role="form">
+                            <div class="col-sm-12 form-group">
+                                <label class="col-sm-3 control-label" for="slider_type">Type</label>
+                                <div class="col-sm-9">
+                                    <select class="form-control" id="slider_type" name="slider_type"/>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" id="cancel">Cancel</button>
+                        <button class="btn btn-danger" data-dismiss="modal" id="snippnet_submit">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    <!-- Category slider modal -->
+    <t t-name="theme_mobicraft.crafito_dynamic_category_slider">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal" contenteditable="False" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content" id="s_media_block_modal">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Category Slider Configuration</h4>
+                    </div>
+                    <div class="modal-body" contenteditable="false">
+                        <div class="row">
+                            <form class="form-horizontal" role="form">
+                                <div class="col-sm-12 form-group">
+                                    <label class="col-sm-3 control-label" for="slider_type">Type</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control" id="slider_type" name="slider_type"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" id="cancel">Cancel</button>
+                        <button class="btn btn-danger" data-dismiss="modal" id="cat_sub_data">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+    <!-- Featured Product slider modal -->
+    <t t-name="theme_mobicraft.mobicraft_dynamic_featured_product_slider">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal" contenteditable="False" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content" id="s_media_block_modal_feature">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Featured Products Slider Configuration</h4>
+                    </div>
+                    <div class="modal-body" contenteditable="false">
+                        <div class="row">
+                            <form class="form-horizontal" role="form">
+                                <div class="col-sm-12 form-group">
+                                    <label class="col-sm-3 control-label" for="slider_type">Type</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control" id="featured_slider_type" name="slider_type"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" id="cancel">Cancel</button>
+                        <button class="btn btn-danger" data-dismiss="modal" id="featured_prod_sub_data">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+
+    <!-- Featured Product slider modal -->
+    <t t-name="theme_mobicraft.mobicraft_dynamic_featured_product_slider">
+        <div aria-hidden="true" aria-labelledby="myModalLabel" class="modal" contenteditable="False" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content" id="s_media_block_modal_feature">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Featured Products Slider Configuration</h4>
+                    </div>
+                    <div class="modal-body" contenteditable="false">
+                        <div class="row">
+                            <form class="form-horizontal" role="form">
+                                <div class="col-sm-12 form-group">
+                                    <label class="col-sm-3 control-label" for="slider_type">Type</label>
+                                    <div class="col-sm-7">
+                                        <select class="form-control" id="featured_slider_type" name="slider_type"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" id="cancel">Cancel</button>
+                        <button class="btn btn-danger" data-dismiss="modal" id="featured_prod_sub_data">Apply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </t>
+</templates>

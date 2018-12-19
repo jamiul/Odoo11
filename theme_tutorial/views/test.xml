@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+  <!-- === Services Page === -->
+    <template id="test_page_template">
+        <t t-call="website.layout">
+            <div id="wrap">
+                <div class="container">
+                    <h1 class="caption">JavaScripts Fundamental</h1>
+                    <ul class="services">
+                        <p id="demo">JavaScript can change HTML content.</p>
+						<button type="button" onclick='document.getElementById("demo").style.fontSize = "40px"'>Click Me!</button>
+                    </ul>
+
+                    <!-- === Snippets' area === -->
+                    <div class="oe_structure" />
+                </div>
+            </div>
+        </t>
+    </template>
+    <record id="test_page" model="website.page">
+        <field name="name">Services page</field>
+        <field name="website_published">True</field>
+        <field name="url">/test</field>
+        <field name="view_id" ref="test_page_template"/>
+    </record>
+     <record id="test_page_link" model="website.menu">
+		  <field name="name">Test</field>
+		  <field name="page_id" ref="test_page"/>
+		  <field name="parent_id" ref="website.main_menu" />
+		  <field name="sequence" type="int">60</field>
+   </record>
+</odoo>

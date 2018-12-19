@@ -1,0 +1,1560 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- Show Sign in -->
+        <!-- Removed Sign In  -->
+        <template id="portal.portal_show_sign_in" inherit_id="portal.frontend_layout" name="Show Sign In1" active="False" customize_show="False" />
+
+        <!-- Viewport -->
+        <template id="theme_mobicraft_viewport" inherit_id="website.layout">
+            <xpath expr="//t//meta" position="after">
+                <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+            </xpath>
+            <xpath expr="//footer" position="after">
+                <a class="cd-top" href="#0">
+                    <i class="fa fa-chevron-up"/>
+                </a>
+            </xpath>
+        </template>
+
+        <!-- Total on hover -->
+        <template id="hover_total">
+            <div id="cart_total" t-if="website_sale_order">
+                <div class="cart-content">
+                    <div class="product-desc">
+                        <t t-as="line" t-foreach="website_sale_order.website_order_line">
+                            <div class="pd-row">
+                                <span class="product-img">
+                                    <a t-attf-href="/shop/product/#{ slug(line.product_id.product_tmpl_id) }">
+                                        <span t-field="line.product_id.image_small" t-options="{'widget': 'image', 'class': 'img-rounded', 'alt-field': 'name'}"/>
+                                    </a>
+                                </span>
+                                <div class="product-detail">
+                                    <p class="product-name">
+                                        <a t-attf-href="/shop/product/#{ slug(line.product_id.product_tmpl_id) }">
+                                            <t t-esc="line.product_id.name"/>
+                                        </a>
+                                    </p>
+                                    <p>
+                                        <span class="mobicraft_theme_cart_quantity" t-esc="int(line.product_uom_qty)"/> X 
+                                        <span t-field="line.price_unit" t-options="{'widget': 'monetary', 'display_currency': user_id.partner_id.property_product_pricelist.currency_id}"/>
+                                        <span class="price">
+                                            <a t-attf-href="/shop/product/#{ slug(line.product_id.product_tmpl_id) }">details</a>
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </t>
+                        <div class="total" id="king_cart">
+                            <div id="order_total">
+                                <label>Subtotal:</label>
+                                <span>
+                                    <span style="white-space: nowrap;" t-field="website.sale_get_order().amount_total" t-options="{                                               'widget': 'monetary',                                               'from_currency': website.sale_get_order().pricelist_id.currency_id,                                               'display_currency': website.currency_id                                           }"/>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="button-box">
+                            <a class="view-all btn" href="/shop/cart">View all</a>
+                            <a class="proceed btn" href="/shop/checkout">Proceed to checkout</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Top Header for Administrator -->
+        <template id="theme_mobicraft_account_dropdown_layout" inherit_id="portal.frontend_layout" name="Top Account Header Dropdown">
+            <!-- Hide Administrator -->
+            <xpath expr="//header//ul[@id='top_menu']/li[hasclass('dropdown')]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+        </template>
+
+        <!-- Top header -->
+        <template id="theme_mobicraft_header_layout" inherit_id="website.layout" name="Top Header">
+            <xpath expr="//t[@t-call='web.layout']" position="after">
+                <t t-set="current_language" t-value="lang"/>
+            </xpath>
+            
+            <!-- <xpath expr="//html/head" position="inside">
+                <link href="/theme_mobicraft/static/src/img/favicon.ico" rel="shortcut icon" type="image/x-icon"/>
+            </xpath> -->
+             <!-- <xpath expr="//header//li//a[@href='/shop/cart']" position="attributes">
+                <attribute name='style'>display:none;</attribute>
+            </xpath> -->
+
+            <xpath expr="//div[@id='wrapwrap']//header//div[hasclass('container')]" position="attributes">
+                <attribute name="style">display: none;</attribute>
+            </xpath>
+        
+            <xpath expr="//div[@id='wrapwrap']//header//div[hasclass('container')]" position="before">
+                <div class="header-nav">
+                    <div class="container">
+                        <div class="collapse navbar-collapse navbar-top-collapse">
+                            <ul class="nav navbar-nav navbar-right" id="top_menu">
+                                <t t-as="submenu" t-foreach="website.menu_id.child_id">
+                                    <t t-call="website.submenu"/>
+                                </t>
+                                <li class="divider" t-if="website.user_id != user_id" t-ignore="true"/>
+                                <li class="dropdown" t-if="website.user_id != user_id" t-ignore="true">
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                        <b>
+                                            <span t-esc="(len(user_id.name)&gt;25) and (user_id.name[:23]+'...') or user_id.name"/>
+                                            <span class="caret"/>
+                                        </b>
+                                    </a>
+                                    <ul class="dropdown-menu js_usermenu" role="menu">
+                                        <li id="o_logout">
+                                            <a role="menuitem" t-attf-href="/web/session/logout?redirect=/">Logout</a>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            <!-- Removed navbar-right class -->
+            <xpath expr="//ul[@id='top_menu']" position="attributes">
+                <attribute name="class">nav navbar-nav</attribute>
+            </xpath>
+
+            <xpath expr="//div[@id='wrapwrap']//header//div[hasclass('header-nav')]" position="before">
+                <div class="header-top">
+                    <div class="container">
+                        <div class="ht-top">
+                            <ul>
+                                <li class="language-bar js_language_selector" id="lang" t-if="(request.is_frontend_multilang and len(languages) &gt; 1) or editable">
+                                    <div class="btn-group">
+                                        <button class="dropdown-toggle btn-default" data-caret="true" data-toggle="dropdown" type="button">
+                                            <t t-as="lgs" t-foreach="languages">
+                                                <t t-if="website and lgs[0] == lang">
+                                                    <t t-esc="lgs[0].split('_')[0]"/>
+                                                </t>
+                                            </t>
+                                            <span class="caret"/>
+                                        </button>
+                                        <ul class="dropdown-menu dropdown-menu-right js_language_selector" role="menu">
+                                            <t t-as="lg" t-foreach="languages">
+                                                <li t-att-class="'active' if lang == lg[0] else None">
+                                                    <a class="js_change_lang" t-att-data-default-lang="editable and 'true' if lg[0] == website.default_lang_code else None" t-att-data-lang="lg[0]" t-att-href="url_for(request.httprequest.path + '?' + keep_query(), lang=lg[0])">
+                                                        <t t-esc="lg[0].split('_')[0]"/>
+                                                    </a>
+                                                </li>
+                                            </t>
+                                            <li groups="website.group_website_publisher">
+                                                <t t-set="url_return" t-value="url_for('', '[lang]') + '?' + keep_query()"/>
+                                                <a t-attf-href="/web#action=base.action_view_base_language_install&amp;website_id=#{website.id}&amp;url_return=#{url_return}">Add...</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li class="ht-price-list">
+                                    <t t-set="website_sale_pricelists" t-value="website.get_pricelist_available(show_visible=True)"/>
+                                    <div class="currency_bar" t-if="len(website_sale_pricelists) &gt;1">
+                                        <t t-call="website_sale.pricelist_list"/>
+                                    </div>
+                                </li>
+                                <t t-if="website.user_id != user_id">
+                                    <li>Welcome, <b><t t-esc="user_id.name"/></b></li>
+                                    <li><a href="/my/home">My account</a></li>
+                                    <li><a role="menuitem" t-attf-href="/web/session/logout?redirect=/">Logout</a></li>
+                                </t>
+                                <t t-if="website.user_id == user_id">
+                                    <li><a href="/web/login">Login</a></li>
+                                    <li><a href="/web/signup">Register</a></li>
+                                </t>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="header-middle">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-4 logo">
+                                <h1>
+                                    <a class="navbar-brand logo" href="/" t-if="website" t-field="website.name">My Website</a>
+                                </h1>
+                            </div>
+                            <div class="col-md-6 col-sm-8 hm-right">
+                                <div class="hm-search">
+                                    <div class="static-search">
+                                        <i class="fa fa-search"/>
+                                    </div>
+                                    <div class="header-search">
+                                        <form action="/shop" method="get">
+                                            <t t-set="search_text" t-value="search"/>
+                                            <input class="form-control" name="search" placeholder="Search" t-att-value="search" type="text"/>
+                                            <button class="btn btn-default">
+                                                <i class="fa fa-search"/>
+                                                <span class="oe_search_found" />
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                                <ul class="hm-cart">
+                                    <li class="item-no">
+                                        <a class="top-link-checkout" id="my_cart" title="Checkout">
+                                            <t t-set="website_sale_order" t-value="website.sale_get_order()"/>
+                                            <i class="fa fa-shopping-cart"/>
+                                            <span class="mobicraft_theme_cart_quantity" t-esc="website_sale_order and website_sale_order.cart_quantity or 0"/>
+                                        </a>
+                                        <div class="mini-cart-content dropdown-content left-hand block block-cart skip-content skip-content--style" id="header-cart">
+                                            <div class="" t-if="not website_sale_order or not website_sale_order.website_order_line">Your cart is empty!
+                                            </div>
+                                            <div class="" t-if="website_sale_order and website_sale_order.website_order_line">
+                                                <div id="mobicraft_hover_total">
+                                                    <t t-call="theme_mobicraft.hover_total"/>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <!-- odoo11 -->
+                                    <t t-if="request.env.get('product.wishlist') != None and request.env.ref('website_sale_wishlist.add_to_wishlist').active">
+                                        <t t-set='wishcount' t-value="len(request.env['product.wishlist'].current())"/>
+                                        <li class="item-no" id="my_wish" t-att-style="not wishcount and 'display:none;'">
+                                            <a class="top-link-checkout" href="/shop/wishlist" title="Wishlist">
+                                                <i class="fa fa-heart"/>
+                                                <span t-attf-class="my_wish_quantity o_animate_blink mobicraft_theme_wish_quantity" t-esc="wishcount"/>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <!-- odoo 11 done  -->
+
+                                </ul>
+                                <button class="navbar-toggle" data-target=".navbar-top-collapse" data-toggle="collapse" type="button">
+                                    <span class="sr-only">Toggle navigation</span>
+                                    <span class="icon-bar"/>
+                                    <span class="icon-bar"/>
+                                    <span class="icon-bar"/>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+
+
+        <!-- hide logo -->
+        <template id="website.layout_logo_show" inherit_id="website.layout" customize_show="False" active="False" name="Show Logo"/>
+        
+        <template id="theme_mobicraft_layout_logo_show" inherit_id="theme_mobicraft.theme_mobicraft_header_layout" customize_show="True" active="True" name="Show Logo">
+            <xpath expr="//div[hasclass('header-middle')]//div[hasclass('logo')]" position="replace">
+                <div class="col-md-6 col-sm-4 logo">
+                    <a href="/">
+                        <span t-field="res_company.logo" t-options="{'widget': 'image'}" t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name" />
+                    </a>
+                </div>
+            </xpath>
+        </template>
+
+
+        <template id="website_sale.search count" inherit_id="website.website_search_box" active="False" customize_show="False" name="Show # found"/>
+
+        <template id="theme_mobicraft_search_count" inherit_id="theme_mobicraft.theme_mobicraft_header_layout" active="True" customize_show="True" name="Show # found">
+            <xpath expr="//span[hasclass('oe_search_found')]" position="replace">
+                <span t-if='search and search_count' class='oe_search_found'> <small>(<t t-esc="search_count"/> found)</small></span>
+            </xpath>
+        </template>
+
+
+        <!-- Custom Footer -->
+        <template id="theme_mobicraft_footer_customize" inherit_id="website.footer_default">
+            <xpath expr="//div[hasclass('container', 'hidden-print')]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('container', 'hidden-print')]" position="before">
+                <div class="footer-top hidden-print">
+                    <div class="container">
+                        <div class="row">
+                            <div class="footer-content">
+                                <div class="col-md-3 col-sm-4 footer-col">
+                                    <section class="fot-col fot-address">
+                                        <h3 class="diff-title">Contact Us</h3>
+                                        <div class="address-list">
+                                            <address itemscope="itemscope" itemtype="http://schema.org/Organization">
+                                                <div t-field="res_company.partner_id" t-options="{                                                     'widget': 'contact',                                                     'fields': ['address']}"/>
+                                            </address>
+                                            <p class="call-us">
+                                                <span>
+                                                    <a t-attf-href="tel: #{res_company.phone}">
+                                                        <i class="fa fa-phone"/>
+                                                        <span t-field="res_company.phone"/>
+                                                    </a>
+                                                </span>
+                                            </p>
+                                            <a t-att-href="'mailto:%s' % res_company.email">
+                                                <i class="fa fa-envelope-o"/>
+                                                <span t-field="res_company.email" t-ignore="true"/>
+                                            </a>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="col-md-2 col-sm-3 footer-col">
+                                    <section class="fot-col fot-link">
+                                        <h3 class="diff-title">Quick Links</h3>
+                                        <ul>
+                                            <li>
+                                                <a href="#">Security</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Privacy</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Text Messaging</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Legal</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Supply chain</a>
+                                            </li>
+                                        </ul>
+                                    </section>
+                                </div>
+                                <div class="col-md-2 col-sm-3 footer-col">
+                                    <section class="fot-col fot-link">
+                                        <h3 class="diff-title">Support</h3>
+                                        <ul>
+                                            <li>
+                                                <a href="#">Help</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Gift Cards</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Order Status</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Free Shipping</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Returns &amp; Exchanges</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">International</a>
+                                            </li>
+                                        </ul>
+                                    </section>
+                                </div>
+                                <div class="col-md-2 col-sm-2 footer-col">
+                                    <section class="fot-col fot-link">
+                                        <h3 class="diff-title">About Us</h3>
+                                        <ul>
+                                            <li>
+                                                <a href="#">About Us</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Jobs</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Affiliates</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Meet The Maker</a>
+                                            </li>
+                                            <li>
+                                                <a href="#">Contact</a>
+                                            </li>
+                                        </ul>
+                                    </section>
+                                </div>
+                                <div class="col-md-3 col-sm-12 newsletter-div">
+                                    <section>
+                                        <t t-if="request.env.ref('theme_mobicraft.theme_mobicraft_layout_logo_show').active">
+                                            <a class="bottom-logo img img-responsive" href="/">
+                                                <span t-field="res_company.logo" t-options="{'widget': 'image'}" t-att-alt="'Logo of %s' % res_company.name" t-att-title="res_company.name" />
+                                            </a>
+                                        </t>
+                                        <div class="bottom-social-links">
+                                            <ul>
+                                                <t t-if="website.social_googleplus">
+                                                    <li>
+                                                        <a t-att-href="website.social_googleplus" rel="publisher">
+                                                            <i class="fa fa-google-plus"></i>
+                                                        </a>
+                                                    </li>
+                                                </t>
+                                                <t t-if="website.social_facebook">
+                                                    <li>
+                                                        <a t-att-href="website.social_facebook">
+                                                            <i class="fa fa-facebook"/>
+                                                        </a>
+                                                    </li>
+                                                </t>
+                                                <t t-if="website.social_twitter">
+                                                    <li>
+                                                        <a t-att-href="website.social_twitter">
+                                                            <i class="fa fa-twitter"/>
+                                                        </a>
+                                                    </li>
+                                                </t>
+                                                <t t-if="website.social_github">
+                                                    <li>
+                                                        <a t-att-href="website.social_github">
+                                                            <i class="fa fa-github"/>
+                                                        </a>
+                                                    </li>
+                                                </t>
+                                                <t t-if="website.social_linkedin">
+                                                    <li>
+                                                        <a t-att-href="website.social_linkedin">
+                                                            <i class="fa fa-linkedin"/>
+                                                        </a>
+                                                    </li>
+                                                </t>
+                                                <t t-if="website.social_youtube">
+                                                    <li>
+                                                        <a t-att-href="website.social_youtube">
+                                                            <i class="fa fa-youtube"/>
+                                                        </a>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        <!-- Copyright Footer -->
+        <template id="footer_copyright" inherit_id="website.layout_footer_copyright" name="Mobicraft Footer">
+            <xpath expr="//div[hasclass('container', 'mt16', 'mb8')]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//div[hasclass('container', 'mt16', 'mb8')]" position="before">
+                <div class="footer-btm">
+                    <div class="container">
+                        <div class="footer-bottom-div">
+                            <div class="row">
+                                <div class="col-md-6 col-sm-6">
+                                    <div class="payment-icons"/>
+                                </div>
+                                <div class="col-md-6 col-sm-6">
+                                    <ul class="link">
+                                        <li>
+                                            <a href="#">Terms &amp; Conditions</a>
+                                        </li>
+                                        <li>
+                                            <a href="#">Privacy Policy</a>
+                                        </li>
+                                        <li class="last-li">
+                                            <a href="#">© 2016 Theme Mobicraft. All Rights Reserved. </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+          <!-- odoo11 -->
+        <template id="theme_mobicraft_header_footer_custom_payment" inherit_id="theme_mobicraft.footer_copyright" customize_show="True" active="False" name="Payment Icons">
+            <xpath expr="//div[hasclass('payment-icons')]" position="replace">
+                <div class="payment-icons">
+                    <t t-foreach="request.website.payment_icons()" t-as="icon">
+                        <span t-field="icon.image" t-options="{&quot;widget&quot;: &quot;image&quot;, &quot;alt-field&quot;: &quot;name&quot;}"/>
+                    </t>
+                </div>
+            </xpath>
+        </template>
+
+        <!-- hide default payment icons -->
+        <template id="website_payment.header_footer_custom_payment" inherit_id="website.footer_default" customize_show="False" active="False" name="Payment Icons"/>
+
+        <!-- Multi image feature for products -->
+        <template id="website_multiple_image_product_slider" inherit_id="website_sale.product" name="Multi-Image Product" active="True" customize_show="True">
+            <xpath expr="//section[@id='product_detail']//span[@itemprop='image']" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            
+            <xpath expr="//section[@id='product_detail']//div[@id='o-carousel-product']" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+
+
+            <xpath expr="//section[@id='product_detail']//span[@itemprop='image']" position="before">
+                <t t-if="not product.multi_image">
+                    <span itemprop="image" t-field="product.image" t-options="{'widget': 'image', 'class': 'product_detail_img', 'alt-field': 'name', 'zoom': 'image'}"/>
+                </t>
+                <t t-if="product.multi_image and website.get_multiple_images(product.id)">
+                    <span itemprop="image">
+                        <div id="gallery">
+                            <img class="product_detail_img"
+                                 t-att-alt="product.name"
+                                 t-att-title="product.name"
+                                 t-att-src="website.image_url(product, 'image')"
+                                 t-att-data-image="website.image_url(product, 'image')"/>
+                            <t t-as="im" t-foreach="website.get_multiple_images(product.id)">
+                                <t t-if="im.attach_type == 'image'">
+                                    <img t-att-src="website.image_url(im, 'image')"
+                                         t-att-alt="im.alt if im.alt else im.name"
+                                         t-att-data-image="website.image_url(im, 'image')"
+                                         t-att-title="im.name if im.name else product.name"/>
+                                </t>
+                                <t t-if="im.attach_type == 'video'">
+                                    <t t-if="im.video_type == 'youtube'">
+                                        <img t-att-alt="im.alt if im.alt else im.name"
+                                             data-type="youtube"
+                                             t-att-data-videoid="im.video_id"
+                                             t-att-data-description="im.name if im.name else product.name"/>
+                                     </t>
+                                     <t t-if="im.video_type == 'vimeo'">
+                                        <img t-att-alt="im.alt if im.alt else im.name"
+                                             data-type="vimeo"
+                                             t-att-src="website.image_url(im, 'cover_image') if im.cover_image else website.image_url(im, 'image')"
+                                             t-att-data-image="website.image_url(im, 'cover_image') if im.cover_image else website.image_url(im, 'image')"
+                                             t-att-data-videoid="im.video_id"
+                                             t-att-data-description="im.name if im.name else product.name"/>
+                                     </t>
+                                     <t t-if="im.video_type == 'html5video'">
+                                        <img data-type="html5video"
+                                             t-att-alt="im.alt if im.alt else im.name"
+                                             t-att-src="website.image_url(im, 'cover_image') if im.cover_image else website.image_url(im, 'image')"
+                                             t-att-data-image="website.image_url(im, 'cover_image') if im.cover_image else website.image_url(im, 'image')"
+                                             t-att-data-videoogv="im.video_ogv if im.video_ogv else '' "
+                                             t-att-data-videowebm="im.video_webm if im.video_webm else '' "
+                                             t-att-data-videomp4="im.video_mp4 if im.video_mp4 else '' "
+                                             t-att-data-description="im.name if im.name else product.name"/>
+                                     </t>
+                                </t>
+                            </t>
+                        </div>
+                    </span>
+                </t>
+                <t t-if="product.multi_image and not website.get_multiple_images(product.id)">
+                    <span itemprop="image" t-field="product.image" t-options="{'widget': 'image', 'class': 'product_detail_img', 'alt-field': 'name', 'zoom': 'image'}"/>
+                </t>
+            </xpath>
+        </template>
+        <!-- Product detail page -->
+        <template id="theme_mobicraft_product_details" inherit_id="website_sale.product" name="Product Details">
+            <xpath expr="//div[@itemscope='itemscope']/section/div" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <!-- Added class for main section in product detail page -->
+            <xpath expr="//div[@itemscope='itemscope']/section" position="attributes">
+                <attribute name="t-attf-class">container mt8 product-view oe_website_sale #{(compute_currency(product.lst_price) - product.price) &gt; 0.1 and 'discount'}</attribute>
+            </xpath>
+            <!-- Theme breadcrumb -->
+            <xpath expr="//div[@itemscope='itemscope']/section" position="before">
+                <section class="page-title">
+                    <div class="container">
+                        <div>
+                             <ul class="breadcrumb">
+                                <li>
+                                    <a href="/">Home</a>
+                                </li>
+                                <li>
+                                    <a href="/shop">Products</a>
+                                </li>
+                                <li t-if="category">
+                                    <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)" t-field="category.name"/>
+                                </li>
+                                <li class="active">
+                                    <span t-field="product.name"/>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </section>
+            </xpath>
+            <!-- Product detail page right side design -->
+            <xpath expr="//section[@id='product_detail']//div[hasclass('row')]//div[hasclass('col-sm-5', 'col-lg-4', 'col-lg-offset-1')]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//section[@id='product_detail']//div[hasclass('row')]//div[hasclass('col-sm-5', 'col-lg-4', 'col-lg-offset-1')]" position="before">
+                <div class="col-xs-12 col-md-5 col-lg-5 col-sm-5 product-detail" id="product_details">
+                    <div class="product-shop-info">
+                        <div class="product-title">
+                            <h1 itemprop="name" t-field="product.name">Product Name</h1>
+                            <ul class="ratings"/>
+                            <p class="review" t-if="request.env.ref('website_sale.product_comment').active">
+                                <a href="#">
+                                    <span>
+                                        <t t-esc="len(product.website_message_ids)"/>
+                                    </span>review(s) | Add your review</a>
+                            </p>
+                            <span itemprop="url" style="display:none;" t-esc="'/shop/product/%s' % slug(product)"/>
+                        </div>
+                        <!-- <p class="availability in-stock">Availability: <span t-if="product.qty_available >0">In stock</span><span t-if="product.qty_available == 0 ">Out of stock</span></p>-->
+                        <div class="product-options-bottom">
+                            <form class="js_add_cart_variants" method="POST" t-att-action="keep('/shop/cart/update')">
+                                <input name="csrf_token" t-att-value="request.csrf_token()" type="hidden"/>
+                                <div class="js_product" t-if="product.product_variant_ids">
+                                    <div class="details">
+                                        <div class="price-box">
+                                            <t t-call="website_sale.product_price"/>
+                                        </div>
+                                        <t t-if="product.description_sale">
+                                            <div class="pro-desc">
+                                                <p t-field="product.description_sale"/>
+                                            </div>
+                                        </t>
+                                    </div>
+                                    <t t-placeholder="select">
+                                        <input class="product_id" name="product_id" t-att-value="int(product.product_variant_ids[0]) if len(product.product_variant_ids) == 1 else '0'" type="hidden"/>
+                                        <t t-call="website_sale.variants">
+                                            <t t-set="ul_class" t-value="'nav-stacked'"/>
+                                        </t>
+                                    </t>
+                                    <p class="css_not_available_msg bg-danger" style="padding: 15px;" t-if="len(product.product_variant_ids) &gt; 1">Product not available</p>
+                                    <!-- <div class="add-to-cart"> -->
+                                        <a class="btn cart-btn btn-lg js_check_product a-submit" href="#" id="add_to_cart">
+                                            <i class="fa fa-shopping-cart"/>Add to Cart</a>
+                                    <!-- </div> -->
+                                    <div class='availability_messages'/>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            <!-- Product Description -->
+            <xpath expr="//div[@itemprop='description']" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//div[@itemprop='description']" position="before">
+                <div class="container" id="website_description">
+                    <div class="pd-more-info">
+                        <!-- Nav tabs -->
+                        <ul class="nav nav-tabs" id="description_reviews_tabs" role="tablist">
+                            <li class="active" role="presentation">
+                                <a aria-controls="more_info" data-toggle="tab" href="#description" role="tab">Description</a>
+                            </li>
+                        </ul>
+                        <div class="tab-content" id="description_reviews_tabs_contents">
+                            <div class="tab-pane active" id="description" role="tabpanel">
+                                <div class="oe_structure mt16" id="product_full_description" itemprop="description" t-field="product.website_description"/>
+                                <div class="oe_structure"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+
+        <!-- change select quantity position  -->
+        <template id="website_sale.product_quantity" inherit_id="website_sale.product" customize_show="False" active="False" name="Select Quantity">
+        </template>
+
+        <template customize_show="True" id="mobicraft_product_quantity" 
+            inherit_id="theme_mobicraft.theme_mobicraft_product_details" name="Select Quantity">
+            <xpath expr="//a[@id='add_to_cart']" position="before">
+                <div class="css_quantity input-group oe_website_spinner" contenteditable="false">
+                    <a t-attf-href="#" class="mb8 input-group-addon js_add_cart_json">
+                        <i class="fa fa-minus"></i>
+                    </a>
+                    <input type="text" class="form-control quantity" data-min="1" name="add_qty" value="1"/>
+                    <a t-attf-href="#" class="mb8 input-group-addon float_left js_add_cart_json">
+                        <i class="fa fa-plus"></i>
+                    </a>
+                </div>
+            </xpath>
+        </template>
+
+        <!-- Discussion inherited to display in tabs -->
+        <template active="True" customize_show="True" id="website_sale.product_comment" inherit_id="theme_mobicraft.theme_mobicraft_product_details" name="Discussion and Rating">
+            <!-- Rating -->
+            <xpath expr="//div[@id='product_details']//ul[hasclass('ratings')]" position="inside">
+                 <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                <t t-call="portal.message_thread">
+                    <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                    <t t-set="object" t-value="product"/>
+                    <t t-set="only_rating" t-value="1"/>
+                    <t t-set="display_rating" t-value="True"/>
+                    <t t-set="disable_composer" t-value="True"/>
+                </t>
+            </xpath>
+            <!-- Will add review tab -->
+            <xpath expr="//div[@id='website_description']/div/ul/li" position="after">
+                <li role="presentation">
+                    <a aria-controls="reviews" data-toggle="tab" href="#reviews" role="tab">Reviews 
+                        <t t-if="len(product.website_message_ids)">
+                            <span class="review_label">
+                                (
+                                <t t-esc="len(product.website_message_ids)"/>
+                                )</span>
+                        </t>
+                    </a>
+                </li>
+            </xpath>
+            <!-- Will add review tab contents -->
+            <xpath expr="//div[@id='website_description']//div[@id='description']" position="after">
+                <div class="tab-pane" id="reviews" role="tabpanel">
+                    <section class="container">
+                        <div class="row col-md-10 col-md-offset-1">
+                            <t t-call="portal.message_thread">
+                                <t t-set="object" t-value="product"/>
+                                <t t-set="display_rating" t-value="True"/>
+                            </t>
+                        </div>
+                    </section>
+                </div>
+            </xpath>
+        </template>
+
+        <!-- odoo11 -->
+        <template id="website_sale.product_variants" inherit_id="website_sale.product" active="False" customize_show="False" name="List View of Variants"/>
+
+        <template id="theme_mobicraft_product_variants" inherit_id="theme_mobicraft.theme_mobicraft_product_details" active="False" customize_show="True" name="List View of Variants">
+          <xpath expr="//t[@t-placeholder='select']" position="replace">
+            <input type="hidden" t-if="len(product.product_variant_ids) == 1" class="product_id" name="product_id" t-att-value="product.product_variant_id.id"/>
+            <t t-if="len(product.product_variant_ids) &gt; 1">
+              <label label-default="label-default" class="radio" t-foreach="product.product_variant_ids" t-as="variant_id">
+                <input type="radio" name="product_id" class="js_product_change" t-att-checked="'checked' if variant_id_index == 0 else None" t-att-value="variant_id.id" t-att-data-lst_price="variant_id.lst_price" t-att-data-price="variant_id.price"/>
+                <span t-esc="variant_id.name_get()[0][1]"/>
+                <span class="badge" t-if="variant_id.price_extra">
+                  <t t-esc="variant_id.price_extra > 0 and '+' or ''"/><span t-field="variant_id.price_extra" style="white-space: nowrap;" t-options='{
+                        "widget": "monetary",
+                        "from_currency": product.currency_id,
+                        "display_currency": website.currency_id
+                      }'/>
+                </span>
+              </label>
+            </t>
+          </xpath>
+        </template>
+
+
+
+        <!-- Suggested products -->
+        <template customize_show="True" id="website_sale.recommended_products" inherit_id="website_sale.product" name="Alternative Products">
+            <xpath expr="//div[@id='product_full_description']" position="after">
+                <div class="related-products container" t-if="product.alternative_product_ids">
+                    <div class="left-title">
+                        <h3>Suggested alternatives:</h3>
+                        <hr/>
+                    </div>
+                    <div class="owl-carousel" id="recommended_products_slider">
+                        <t t-as="product" t-foreach="product.alternative_product_ids">
+                            <div class="cs-product">
+                                <div class="pwp-img">
+                                    <a t-att-href="'/shop/product/%s' % slug(product)">
+                                        <img t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                    </a>
+                                </div>
+                                <div class="pwp-info">
+                                    <p class="pwpi-title">
+                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                            <span t-field="product.name"/>
+                                        </a>
+                                    </p>
+                                        <p class="price">
+                                    <b>
+                                            <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1  and website.get_current_pricelist().discount_policy=='without_discount'">
+                                                <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                            </t>
+                                            <span t-esc="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                            <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                            <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                        </b>
+                                </p>
+                                    <div class="pink-box">
+                                        <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                            <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                            <t t-call="portal.message_thread">
+                                                <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                <t t-set="object" t-value="product"/>
+                                                <t t-set="only_rating" t-value="1"/>
+                                                <t t-set="display_rating" t-value="True"/>
+                                                <t t-set="disable_composer" t-value="True"/>
+                                            </t>
+                                        </ul>
+                                        <div class="view">
+                                            <div class="shopping-cart">
+                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                    <i class="fa fa-shopping-cart"/>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        <!-- Products Items -->
+        <template customize_show="False" active="True" id="theme_mobicraft_products_item" name="Theme Mobicraft Product item"
+            inherit_id="website_sale.products_item">
+
+            <xpath expr="//form" position="attributes">
+                <attribute name="style">display: none;</attribute>
+            </xpath>
+            <xpath expr="//form" position="before">
+            
+                <form action="/shop/cart/update" method="post">
+                    <input name="csrf_token" t-att-value="request.csrf_token()" type="hidden"/>
+                    <div itemscope="itemscope" itemtype="http://schema.org/Product">
+                        <div class="cs-product">
+                            <div class="pwp-img">
+                                <a itemprop="url" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
+                                    <img class="img img-responsive" itemprop="image" t-att-alt="product.name" t-att-src="website.image_url(product, 'image', None if product_image_big else '300x300')"/>
+                                </a>
+
+                                <!-- odoo11 -->
+                                <!-- place here for Wishlist and compare products  -->
+                                <div class="product_price compare-wishlist-wrapper" t-if="product.product_variant_ids">  </div>  
+
+                            </div>
+                            <div class="pwp-info">
+                                <p class="pwpi-title">
+                                    <a itemprop="name" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))" t-field="product.name"/>
+                                </p>
+                                <p class="price">
+                                    <b>
+                                            <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1  and website.get_current_pricelist().discount_policy=='without_discount'">
+                                                <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                            </t>
+                                            <span t-esc="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                            <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                            <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                        </b>
+                                </p>
+                                <div class="hidden" id="list_add_to_cart">
+                                    <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                        <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                        <t t-call="portal.message_thread">
+                                            <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                            <t t-set="object" t-value="product"/>
+                                            <t t-set="only_rating" t-value="1"/>
+                                            <t t-set="display_rating" t-value="True"/>
+                                            <t t-set="disable_composer" t-value="True"/>
+                                        </t>
+                                    </ul>
+                                    <span t-field="product.description_sale"
+                                           t-if="request.env.ref('theme_mobicraft.theme_mobicraft_products_description').active"/>
+
+                                    <input name="product_id" t-att-value="product.product_variant_id.id" type="hidden"/>
+                                    <t t-if="len(product.product_variant_ids) == 1 and request.env.ref('theme_mobicraft.theme_mobicraft_products_add_to_cart').active">
+                                        <a class="a-submit btn btn-primary">Add to cart</a>
+                                    </t>
+                                    <t t-if="len(product.product_variant_ids) &gt; 1 and request.env.ref('theme_mobicraft.theme_mobicraft_products_add_to_cart').active">
+                                        <a class="btn btn-primary" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">Add to cart</a>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </xpath>
+        </template>
+        <!-- Product Style Tag image -->
+        <template active="True" customize_show="True" id="theme_mobicraft_style_tags" inherit_id="theme_mobicraft.theme_mobicraft_products_item" name="Product Sale Tags">
+            <xpath expr="//div[@itemscope='itemscope']/div[hasclass('cs-product')]/div" position="inside">
+                <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                    <t t-esc="product.product_style_tag_id.name"/>
+                </div>
+            </xpath>
+        </template>
+
+
+
+        <template id="website_sale.sort" inherit_id="website_sale.products" active="False" customize_show="False" name="Show Sort by"/>
+        
+
+        <template id="website_sale.products_description" inherit_id="website_sale.products_item" active="False" customize_show="False" name="Product Description"/>
+
+        <template id="theme_mobicraft_products_description" inherit_id="theme_mobicraft.theme_mobicraft_products_item" active="False" customize_show="True" name="Product Description">
+            <xpath expr="//div[hasclass('pwp-img')]" position="after">
+                <div class="text-info oe_subdescription" contenteditable="false">
+                    <div itemprop="description" t-field="product.description_sale"></div>
+                </div>
+            </xpath>
+        </template>
+
+
+        <!-- Products page -->
+        <template id="theme_mobicraft_sale_products" inherit_id="website_sale.products" name="Theme Mobicraft Products">
+            <xpath expr="//div[@id='wrap']/div[2]/div[1]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//div[@id='wrap']/div[2]/div[3]" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+
+            <!-- Brand Cover and description -->
+            <xpath expr="//div[@id='products_grid']/table" position="before">
+                <t t-if="brand_obj and brand_obj.brand_cover">
+                    <img class="mb16" height="300" style="width:100%; padding: 0 15px;" t-att-alt="brand_obj.name" t-att-src="website.image_url(brand_obj, 'brand_cover')" t-att-title="brand_obj.name"/>
+                </t>
+                <t t-if="brand_obj and brand_obj.brand_description">
+                    <div class="mb16" style="width:100%; padding: 0 15px;">
+                        <t t-raw="brand_obj.brand_description"/>
+                    </div>
+                </t>
+            </xpath>
+
+            <xpath expr="//div[@id='wrap']//div[hasclass('oe_structure')]" position="before">
+                <section class="page-title">
+                    <div class="container">
+                        <ul class="breadcrumb">
+                            <li>
+                                <a href="/">Home</a>
+                            </li>
+                            <li t-att-class="'' if category else 'active'">
+                                <a href="/shop">Products</a>
+                            </li>
+                            <li t-att-class="'active' if category else ''" t-if="category">
+                                <a t-att-href="keep('/shop/category/%s' % slug(category), category=0)" t-field="category.name"/>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+            </xpath>
+            <!-- Category name, grid/list switching, pager, sort by -->
+            <xpath expr="//div[@id='products_grid']/table" position="before">
+                <div class="right-title">
+                    <t t-if="category">
+                        <h3 t-field="category.name"/>
+                    </t>
+                    <t t-if="not category">
+                        <h3>All Products</h3>
+                    </t>
+                    <hr/>
+                </div>
+                <div class="category-products category_products">
+                    <div class="toolbar">
+                        <div class="toolbar-pager">
+                            <div class="pager_left">
+                                <div class="view-mode">
+                                    <button class="shift_grid_view active" title="Grid View">
+                                        <i class="fa fa-th-large"/>
+                                    </button>
+                                    <button class="shift_list_view" title="List View">
+                                        <i class="fa fa-bars"/>
+                                    </button>
+                                </div>
+                                <div class="paging_sort">
+                                    <!-- Product paging -->
+                                    <t t-if="products and website.get_pager_selection()">
+                                        <t t-set="website_ppp" t-value="website.get_pager_selection()"/>
+                                        <span t-attf-class="#{website_ppp and len(website_ppp['page_no'])&gt;1 and 'simple_name' or 'hidden'}">
+                                            <t t-esc="website_ppp['name']"/>
+                                            <div t-attf-class="#{website_ppp and len(website_ppp['page_no'])&gt;1 and 'dropdown' or 'hidden'} btn-group">
+                                                <t t-set="curr_ppp" t-value="website.get_current_pager_selection()"/>
+                                                <a class="dropdown-toggle btn btn-default" data-toggle="dropdown" href="#">
+                                                    <t t-esc="curr_ppp or ' - '"/>
+                                                    <span class="caret"/>
+                                                </a>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li t-as="pl" t-foreach="website_ppp['page_no']">
+                                                        <a t-att-href="'/shop/pager_selection/%s' % pl.id">
+                                                            <span class="switcher_pricelist" t-att-data-pl_id="pl.id" t-esc="pl.name"/>
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </span>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="pager_right">
+                                <div class="products_pager">
+                                    <t t-call="website.pager"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+            <!-- Theme Mobicraft Product Grid View -->
+            <xpath expr="//div[@id='products_grid']/table" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']/table" position="before">
+                <div id="theme_mobicraft_products_grid_view">
+                    <t t-as="tr_product" t-foreach="bins">
+                        <t t-as="td_product" t-foreach="tr_product">
+                            <t t-if="td_product">
+                                <t t-set="product" t-value="td_product['product']"/>
+                                <div class="col-md-6 col-sm-6 list-items" t-if="website.product_display_grid == '2'">
+                                    <t t-call="theme_mobicraft.theme_mobicraft_products_item"/>
+                                </div>
+                                <div class="col-md-4 col-sm-6 list-items" t-if="website.product_display_grid == '3'">
+                                    <t t-call="theme_mobicraft.theme_mobicraft_products_item"/>
+                                </div>
+                                <div class="col-md-3 col-sm-6 list-items" t-if="website.product_display_grid == '4'">
+                                    <t t-call="theme_mobicraft.theme_mobicraft_products_item"/>
+                                </div>
+                            </t>
+                        </t>
+                    </t>
+                </div>
+            </xpath>
+        </template>
+        <!-- Theme Mobicraft Product list view -->
+        <template active="False" customize_show="False" id="website_sale.products_list_view" inherit_id="website_sale.products" name="List View">
+            <xpath expr="//div[@id='theme_mobicraft_products_grid_view']" position="attributes">
+                <attribute name="style">display:none;</attribute>
+            </xpath>
+            <xpath expr="//div[@id='theme_mobicraft_products_grid_view']" position="before">
+                <div id="theme_mobicraft_products_list_view">
+                    <t t-as="product" t-foreach="products">
+                        <div class="col-md-4 col-sm-6 oe_product oe_list oe_product_cart" t-att-data-publish="product.website_published and 'on' or 'off'">
+                            <t t-call="theme_mobicraft.theme_mobicraft_products_item"/>
+                        </div>
+                    </t>
+                </div>
+            </xpath>
+        </template>
+        <!-- Remove main add to cart -->
+        <template active="False" customize_show="False" id="website_sale.products_add_to_cart" inherit_id="website_sale.products_item" name="Add to Cart">
+            <xpath expr="//div[hasclass('product_price')]" position="inside">
+                <input name="product_id" t-att-value="product.product_variant_id.id" type="hidden"/>
+                <t t-if="len(product.product_variant_ids) == 1">
+                    <a class="btn btn-default btn-xs a-submit">
+                        <span class="fa fa-shopping-cart"/>
+                    </a>
+                </t>
+                <t t-if="len(product.product_variant_ids) &gt; 1">
+                    <a class="btn btn-default btn-xs" t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
+                        <span class="fa fa-shopping-cart"/>
+                    </a>
+                </t>
+            </xpath>
+        </template>
+
+
+        <!-- Inherited Add to cart -->
+        <template active="True" customize_show="True" id="theme_mobicraft_products_add_to_cart" inherit_id="theme_mobicraft.theme_mobicraft_products_item" name="Add to Cart">
+            <xpath expr="//div[hasclass('pwp-info')]/div[@id='list_add_to_cart']" position="after">
+                <div class="pink-box">
+                    <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                        <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                        <t t-call="portal.message_thread">
+                            <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                            <t t-set="object" t-value="product"/>
+                            <t t-set="only_rating" t-value="1"/>
+                            <t t-set="display_rating" t-value="True"/>
+                            <t t-set="disable_composer" t-value="True"/>
+                        </t>
+                    </ul>
+                    <div class="view">
+                        <div class="shopping-cart">
+                            <input name="product_id" t-att-value="product.product_variant_id.id" type="hidden"/>
+                            <t t-if="len(product.product_variant_ids) == 1">
+                                <a class="a-submit">
+                                    <i class="fa fa-shopping-cart"/>
+                                </a>
+                            </t>
+                            <t t-if="len(product.product_variant_ids) &gt; 1">
+                                <a t-att-href="keep('/shop/product/%s' % slug(product), page=(pager['page']['num'] if pager['page']['num']&gt;1 else None))">
+                                    <i class="fa fa-shopping-cart"/>
+                                </a>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        <!-- Product Sorting -->
+        <template active="False" customize_show="True" id="theme_mobicraft_product_sorting" inherit_id="theme_mobicraft.theme_mobicraft_sale_products" name="Product Sorting">
+            <xpath expr="//div[hasclass('category-products', 'category_products')]//div[hasclass('pager_right')]/div" position="before">
+                    <div class="sort-by">
+                        <div class="dropdown ">
+                            <button aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" id="sort_by" type="button">
+                                <t t-set="cur_sort" t-value="website.set_current_sorting_data()"/>
+                                <t t-if="not cur_sort">Sort By
+                            </t>
+                                <t t-if="cur_sort">Sort By: 
+                            </t>
+                                <t t-esc="cur_sort"/>
+                                <span class="caret"/>
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <t t-if="not category">
+                                    <t t-as="a" t-foreach="website.get_sort_by_data()">
+                                        <li>
+                                            <a t-att-href="'/shop?sort_id=%s' % a.id" t-field="a.name"/>
+                                        </li>
+                                    </t>
+                                </t>
+                                <t t-if="category">
+                                    <t t-as="a" t-foreach="website.get_sort_by_data()">
+                                        <li>
+                                            <a t-att-href="'/shop/category/%s?sort_id=%s' % (slug(category), a.id)" t-field="a.name"/>
+                                        </li>
+                                    </t>
+                                </t>
+                            </ul>
+                        </div>
+                    </div>
+            </xpath>
+        </template>
+        <!-- Custom Filters -->
+        <template active="False" customize_show="True" id="theme_mobicraft_custom_filterz" inherit_id="website_sale.products" name="Custom Filters" priority="1">
+            <xpath expr="//div[@id='products_grid_before']" position="inside">
+                <div class="popular-tags" t-if="request.session.get('tag') or request.session.get('sortid') or request.session.get('pricerange')">
+                    <div class="left-title mb16">
+                        <h3>Selected Filters</h3>
+                        <hr/>
+                    </div>
+                    <ul id="selectedattr">
+                        <t t-if="request.session.get('tag')">
+                            <label class="label label-info" id="tag">
+                                <span>Tag: 
+                                    <t t-esc="request.session['tag'][1]"/></span>
+                                <a id="clear">X</a>
+                            </label>
+                        </t>
+                        <t t-if="request.session.get('sortid')">
+                            <label class="label label-info" id="sortid" t-if="len(request.session['sortid']) &gt;1">
+                                <span>Sort By: 
+                                    <t t-esc="request.session['sortid'][2]"/></span>
+                                <a id="clear">X</a>
+                            </label>
+                        </t>
+                        <t t-if="request.session.get('pricerange')">
+                            <label class="label label-info" id="pricerange">
+                                <span>Price-Range: 
+                                    <t t-esc="request.session['pricerange']"/></span>
+                                <a id="clear">X</a>
+                            </label>
+                        </t>
+                    </ul>
+                </div>
+            </xpath>
+            <xpath expr="//div[@id='products_grid_before']" position="attributes">
+                <attribute name="class">col-md-3 col-sm-4 hidden-xs</attribute>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']" position="attributes">
+                <attribute name="class">col-md-9 col-sm-8</attribute>
+            </xpath>
+        </template>
+        <!-- Inherited Product Categories -->
+        <template active="False" customize_show="True" id="website_sale.products_categories" inherit_id="website_sale.products" name="Product Categories" priority="2">
+            <xpath expr="//div[@id='products_grid_before']" position="inside">
+                <div class="left-title">
+                    <h3>Categories</h3>
+                    <hr/>
+                </div>
+                <ul class="nav nav-pills nav-stacked category_nav mb16">
+                    <li t-att-class=" '' if category else 'active' ">
+                        <a t-att-href="keep('/shop',category=0)">All Products</a>
+                    </li>
+                    <t t-as="c" t-foreach="categories">
+                        <t t-call="website_sale.categories_recursive"/>
+                    </t>
+                </ul>
+            </xpath>
+            <xpath expr="//div[@id='products_grid_before']" position="attributes">
+                <attribute name="class">col-md-3 col-sm-4 hidden-xs</attribute>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']" position="attributes">
+                <attribute name="class">col-md-9 col-sm-8</attribute>
+            </xpath>
+        </template>
+        <!-- Inherited Product Attributes -->
+        <template active="False" customize_show="True" id="website_sale.products_attributes" inherit_id="website_sale.products" name="Product Attribute's Filters">
+            <xpath expr="//div[@id='products_grid_before']" position="inside">
+                <div class="shop-by mt16">
+                    <div class="left-title">
+                        <h3>Shop by</h3>
+                    </div>
+                    <form class="js_attributes" method="get">
+                        <input name="search" t-att-value="search" type="hidden"/>
+                        <ul class="nav nav-pills nav-stacked mt16">
+                            <t t-as="a" t-foreach="attributes">
+                                <t t-if="a.type != 'hidden'">
+                                    <li t-if="a.value_ids and len(a.value_ids) &gt;1">
+                                        <div>
+                                            <strong t-field="a.name"/>
+                                        </div>
+                                        <t t-if="a.type == 'select'">
+                                            <select class="form-control" name="attrib">
+                                                <option value=""/>
+                                                <t t-as="v" t-foreach="a.value_ids">
+                                                    <option t-att-selected="v.id in attrib_set" t-att-value="'%s-%s' % (a.id,v.id)" t-esc="v.name"/>
+                                                </t>
+                                            </select>
+                                        </t>
+                                        <t t-if="a.type == 'radio'">
+                                            <ul class="nav nav-pills nav-stacked">
+                                                <t t-as="v" t-foreach="a.value_ids">
+                                                    <li t-att-class="'active' if v.id in attrib_set else ''">
+                                                        <label style="margin: 0 20px;">
+                                                            <input name="attrib" t-att-checked="'checked' if v.id in attrib_set else None" t-att-value="'%s-%s' % (a.id,v.id)" type="checkbox"/>
+                                                            <span style="font-weight: normal" t-field="v.name"/>
+                                                        </label>
+                                                    </li>
+                                                </t>
+                                            </ul>
+                                        </t>
+                                        <t t-if="a.type == 'color'">
+                                            <t t-as="v" t-foreach="a.value_ids">
+                                                <label t-attf-class="css_attribute_color #{'active' if v.id in attrib_set else ''}" t-attf-style="background-color:#{v.html_color or v.name}">
+                                                    <input name="attrib" t-att-checked="'checked' if v.id in attrib_set else None" t-att-title="v.name" t-att-value="'%s-%s' % (a.id,v.id)" type="checkbox"/>
+                                                </label>
+                                            </t>
+                                        </t>
+                                    </li>
+                                </t>
+                            </t>
+                        </ul>
+                    </form>
+                </div>
+            </xpath>
+            <xpath expr="//div[@id='products_grid_before']" position="attributes">
+                <attribute name="class">col-md-3 col-sm-4 hidden-xs</attribute>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']" position="attributes">
+                <attribute name="class">col-md-9 col-sm-8</attribute>
+            </xpath>
+        </template>
+        <!-- Product Tags -->
+        <template active="False" customize_show="True" id="theme_mobicraft_product_tag" inherit_id="website_sale.products" name="Product Tags">
+            <xpath expr="//div[@id='products_grid_before']" position="inside">
+                <div class="popular-tags mb16">
+                    <div class="left-title">
+                        <h3>Popular Tags</h3>
+                        <hr/>
+                    </div>
+                    <ul class="tags">
+                        <t t-if="not category">
+                            <t t-as="c" t-foreach="website.get_product_tags()">
+                                <li>
+                                    <a t-att-href="'/shop?tag=%s'%c.id" t-field="c.name"/>
+                                </li>
+                            </t>
+                        </t>
+                        <t t-if="category">
+                            <t t-as="c" t-foreach="website.get_product_tags()">
+                                <li>
+                                    <a t-att-href="'/shop/category/%s?tag=%s' % (slug(category), c.id)" t-field="c.name"/>
+                                </li>
+                            </t>
+                        </t>
+                    </ul>
+                </div>
+            </xpath>
+            <xpath expr="//div[@id='products_grid_before']" position="attributes">
+                <attribute name="class">col-md-3 col-sm-4 hidden-xs</attribute>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']" position="attributes">
+                <attribute name="class">col-md-9 col-sm-8</attribute>
+            </xpath>
+        </template>
+        <!-- Price Slider -->
+        <template active="False" customize_show="True" id="theme_mobicraft_slider_layout" inherit_id="website_sale.products" name="Product Price Slider">
+            <xpath expr="//div[@id='products_grid_before']" position="inside">
+                <div class="popular-tags mt16">
+                    <div class="left-title">
+                        <h3>By Price</h3>
+                        <hr/>
+                    </div>
+                    <div class="price-slider">
+                        <form method="post" t-att-action="keep('/shop'+ ('/category/'+slug(category)) if category else '',search=0)">
+                            <input name="csrf_token" t-att-value="request.csrf_token()" type="hidden"/>
+                            <div id="priceslider"/>
+                            <input id="mobicraft_theme_website_currency" name="website_currency" t-att-value="website.pricelist_id.currency_id.symbol" type="hidden"/>
+                            <input id="m1" name="min1" t-att-value="min1" type="hidden"/>
+                            <input id="m2" name="max1" t-att-value="max1" type="hidden"/>
+                            <input id="ra1" name="range1" t-att-value="range1" type="hidden"/>
+                            <input id="ra2" name="range2" t-att-value="range2" type="hidden"/>
+                        </form>
+                    </div>
+                </div>
+            </xpath>
+            <xpath expr="//div[@id='products_grid_before']" position="attributes">
+                <attribute name="class">col-md-3 col-sm-4 hidden-xs</attribute>
+            </xpath>
+            <xpath expr="//div[@id='products_grid']" position="attributes">
+                <attribute name="class">col-md-9 col-sm-8</attribute>
+            </xpath>
+        </template>
+
+        <!-- Theme Mobicraft Website Megamenu -->
+        <template id="theme_mobicraft_website_megamenu_submenu" inherit_id="website.submenu">
+            <xpath expr="//li[1]" position="attributes">
+                <attribute name="t-if">not submenu.child_id and not submenu.is_megamenu</attribute>
+            </xpath>
+            <xpath expr="//li" position="after">
+                <li t-att-class="'li-mega-menu mm_icon' if submenu.menu_icon and submenu.menu_icon_image else 'li-mega-menu'" t-if="submenu.is_megamenu">
+                    <a t-att-href="'%s' % (submenu.url) if submenu.url else ''" t-att-target="'_blank' if submenu.new_window else ''">
+                        <t t-if="submenu.menu_icon and submenu.menu_icon_image">
+                            <img class="img-responsive icon" t-att-alt="submenu.name" t-att-src="website.image_url(submenu, 'menu_icon_image', '30x30')"/>
+                        </t>
+                        <span t-field="submenu.name"/>
+                        <span class="fa fa-angle-down" t-ignore="true"/>
+                    </a>
+                    <!-- 2 Column -->
+                    <t t-if="submenu.megamenu_type == '2_col'">
+                        <ul class="dropdown-menu mega-dropdown-menu row" t-att-style="'background: url(%s); background-size: cover;' % (website.image_url(submenu, 'megamenu_bg_image')) if submenu.megamenu_bg and submenu.megamenu_bg_img_color == 'bg_img' else '' 'background: %s !important;' % (submenu.megamenu_bg_color) if submenu.megamenu_bg and submenu.megamenu_bg_img_color == 'bg_color' else ''">
+                            <div class="row">
+                                <t t-set="product_categories" t-value="website.get_public_product_category(submenu)"/>
+                                <t t-if="not product_categories">
+                                    <li class="dropdown-header message" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">Still, No category assigned to this menu.!!!
+                                </li>
+                                </t>
+                                <t t-if="product_categories">
+                                    <div t-att-class="'col-md-4 col-xs-12' if submenu.category_slider else ''" t-att-style="'float: %s' % submenu.category_slider_position if submenu.category_slider and submenu.category_slider_position else 'float:left;'">
+                                        <t t-if="submenu.category_slider">
+                                            <li>
+                                                <ul>
+                                                    <li class="dropdown-header slider_header" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">
+                                                        <t t-esc="submenu.carousel_header_name"/>
+                                                    </li>
+                                                    <div class="carousel slide" data-ride="carousel" t-att-id="'myCarousel-%s' % submenu.id">
+                                                        <div class="carousel-inner">
+                                                            <t t-set="a" t-value="0"/>
+                                                            <t t-as="categ" t-foreach="product_categories">
+                                                                <div t-att-class="'item active' if a == 0 else 'item'">
+                                                                    <t t-set="a" t-value="a+1"/>
+                                                                    <a t-att-href="'/shop/category/%s' % slug(categ)">
+                                                                        <img class="img-responsive" t-att-alt="categ.name" t-att-src="website.image_url(categ, 'image', '300x250')"/>
+                                                                    </a>
+                                                                    <h4>
+                                                                        <small t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''">
+                                                                            <t t-esc="categ.name"/>
+                                                                        </small>
+                                                                    </h4>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                    <div class="carousel-control left" data-slide="prev" t-att-data-target="'#myCarousel-%s' % submenu.id">
+                                                        <i class="fa fa-chevron-left"/>
+                                                    </div>
+                                                    <div class="carousel-control right" data-slide="next" t-att-data-target="'#myCarousel-%s' % submenu.id">
+                                                        <i class="fa fa-chevron-right"/>
+                                                    </div>
+                                                </ul>
+                                            </li>
+                                        </t>
+                                    </div>
+                                    <div t-att-class="'col-md-8 col-xs-12 letter-spacing' if submenu.category_slider else 'col-md-12 letter-spacing'">
+                                        <t t-as="category" t-foreach="product_categories">
+                                            <li class="col-sm-6 inline-block">
+                                                <ul>
+                                                    <li class="dropdown-header">
+                                                        <a t-att-href="'/shop/category/%s' % slug(category)" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">
+                                                            <t t-esc="category.name"/>
+                                                        </a>
+                                                    </li>
+                                                    <t t-if="category.child_id">
+                                                        <t t-as="categ" t-foreach="website.get_public_product_child_category(category.child_id)">
+                                                            <li class="categories">
+                                                                <a t-att-href="'/shop/category/%s' % slug(categ)" t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''">
+                                                                    <t t-esc="categ.name"/>
+                                                                </a>
+                                                            </li>
+                                                        </t>
+                                                    </t>
+                                                </ul>
+                                            </li>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="row" t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''" t-if="submenu.display_menu_footer">
+                                <div class="footer">
+                                    <t t-raw="submenu.menu_footer"/>
+                                </div>
+                            </div>
+                        </ul>
+                    </t>
+                    <!-- 3 Column -->
+                    <t t-if="submenu.megamenu_type == '3_col'">
+                        <ul class="dropdown-menu mega-dropdown-menu row" t-att-style="'background: url(%s); background-size: cover;' % (website.image_url(submenu, 'megamenu_bg_image')) if submenu.megamenu_bg and submenu.megamenu_bg_img_color == 'bg_img' else '' 'background: %s !important;' % (submenu.megamenu_bg_color) if submenu.megamenu_bg and submenu.megamenu_bg_img_color == 'bg_color' else ''">
+                            <div class="row">
+                                <t t-set="product_categories" t-value="website.get_public_product_category(submenu)"/>
+                                <t t-if="not product_categories">
+                                    <li class="dropdown-header message" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">Still, No category assigned to this menu.!!!
+                                </li>
+                                </t>
+                                <t t-if="product_categories">
+                                    <div t-att-class="'col-md-3 col-xs-12' if submenu.category_slider else ''" t-att-style="'float: %s' % submenu.category_slider_position if submenu.category_slider and submenu.category_slider_position else 'float:left;'">
+                                        <t t-if="submenu.category_slider">
+                                            <li class="margin">
+                                                <ul>
+                                                    <li class="dropdown-header slider_header" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">
+                                                        <t t-esc="submenu.carousel_header_name"/>
+                                                    </li>
+                                                    <div class="carousel slide" data-ride="carousel" t-att-id="'myCarousel-%s' % submenu.id">
+                                                        <div class="carousel-inner">
+                                                            <t t-set="a" t-value="0"/>
+                                                            <t t-as="categ" t-foreach="product_categories">
+                                                                <div t-att-class="'item active' if a == 0 else 'item'">
+                                                                    <t t-set="a" t-value="a+1"/>
+                                                                    <a t-att-href="'/shop/category/%s' % slug(categ)">
+                                                                        <img class="img-responsive" t-att-alt="categ.name" t-att-src="website.image_url(categ, 'image', '300x250')"/>
+                                                                    </a>
+                                                                    <h4>
+                                                                        <small t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''">
+                                                                            <t t-esc="categ.name"/>
+                                                                        </small>
+                                                                    </h4>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                    <div class="carousel-control left" data-slide="prev" t-att-data-target="'#myCarousel-%s' % submenu.id">
+                                                        <i class="fa fa-chevron-left"/>
+                                                    </div>
+                                                    <div class="carousel-control right" data-slide="next" t-att-data-target="'#myCarousel-%s' % submenu.id">
+                                                        <i class="fa fa-chevron-right"/>
+                                                    </div>
+                                                </ul>
+                                            </li>
+                                        </t>
+                                    </div>
+                                    <div t-att-class="'col-md-9 col-xs-12 letter-spacing' if submenu.category_slider else 'col-md-12 letter-spacing'">
+                                        <t t-as="category" t-foreach="product_categories">
+                                            <li class="col-sm-4 inline-block">
+                                                <ul>
+                                                    <li class="dropdown-header">
+                                                        <a t-att-href="'/shop/category/%s' % slug(category)" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">
+                                                            <t t-esc="category.name"/>
+                                                        </a>
+                                                    </li>
+                                                    <t t-if="category.child_id">
+                                                        <t t-as="categ" t-foreach="website.get_public_product_child_category(category.child_id)">
+                                                            <li class="categories">
+                                                                <a t-att-href="'/shop/category/%s' % slug(categ)" t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''">
+                                                                    <t t-esc="categ.name"/>
+                                                                </a>
+                                                            </li>
+                                                        </t>
+                                                    </t>
+                                                </ul>
+                                            </li>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="row" t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''" t-if="submenu.display_menu_footer">
+                                <div class="footer">
+                                    <t t-raw="submenu.menu_footer"/>
+                                </div>
+                            </div>
+                        </ul>
+                    </t>
+                    <!-- 4 Column -->
+                    <t t-if="submenu.megamenu_type == '4_col'">
+                        <ul class="dropdown-menu mega-dropdown-menu row" t-att-style="'background: url(%s); background-size: cover;' % (website.image_url(submenu, 'megamenu_bg_image')) if submenu.megamenu_bg and submenu.megamenu_bg_img_color == 'bg_img' else '' 'background: %s !important;' % (submenu.megamenu_bg_color) if submenu.megamenu_bg and submenu.megamenu_bg_img_color == 'bg_color' else ''">
+                            <div class="row">
+                                <t t-set="product_categories" t-value="website.get_public_product_category(submenu)"/>
+                                <t t-if="not product_categories">
+                                    <li class="dropdown-header message" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">Still, No category assigned to this menu.!!!
+                                </li>
+                                </t>
+                                <t t-if="product_categories">
+                                    <div t-att-class="'col-md-3 col-xs-12' if submenu.category_slider else ''" t-att-style="'float: %s' % submenu.category_slider_position if submenu.category_slider and submenu.category_slider_position else 'float:left;'">
+                                        <t t-if="submenu.category_slider">
+                                            <li class="margin">
+                                                <ul>
+                                                    <li class="dropdown-header slider_header" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">
+                                                        <t t-esc="submenu.carousel_header_name"/>
+                                                    </li>
+                                                    <div class="carousel slide" data-ride="carousel" t-att-id="'myCarousel-%s' % submenu.id">
+                                                        <div class="carousel-inner">
+                                                            <t t-set="a" t-value="0"/>
+                                                            <t t-as="categ" t-foreach="product_categories">
+                                                                <div t-att-class="'item active' if a == 0 else 'item'">
+                                                                    <t t-set="a" t-value="a+1"/>
+                                                                    <a t-att-href="'/shop/category/%s' % slug(categ)">
+                                                                        <img class="img-responsive" t-att-alt="categ.name" t-att-src="website.image_url(categ, 'image', '300x250')"/>
+                                                                    </a>
+                                                                    <h4>
+                                                                        <small t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''">
+                                                                            <t t-esc="categ.name"/>
+                                                                        </small>
+                                                                    </h4>
+                                                                </div>
+                                                            </t>
+                                                        </div>
+                                                    </div>
+                                                    <div class="carousel-control left" data-slide="prev" t-att-data-target="'#myCarousel-%s' % submenu.id">
+                                                        <i class="fa fa-chevron-left"/>
+                                                    </div>
+                                                    <div class="carousel-control right" data-slide="next" t-att-data-target="'#myCarousel-%s' % submenu.id">
+                                                        <i class="fa fa-chevron-right"/>
+                                                    </div>
+                                                </ul>
+                                            </li>
+                                        </t>
+                                    </div>
+                                    <div t-att-class="'col-md-9  col-xs-12 letter-spacing' if submenu.category_slider else 'col-md-12 letter-spacing'">
+                                        <t t-as="category" t-foreach="product_categories">
+                                            <li class="col-sm-3 inline-block">
+                                                <ul>
+                                                    <li class="dropdown-header">
+                                                        <a t-att-href="'/shop/category/%s' % slug(category)" t-att-style="'color: %s' %(submenu.main_category_color) if submenu.customize_menu_colors and submenu.main_category_color else ''">
+                                                            <t t-esc="category.name"/>
+                                                        </a>
+                                                    </li>
+                                                    <t t-if="category.child_id">
+                                                        <t t-as="categ" t-foreach="website.get_public_product_child_category(category.child_id)">
+                                                            <li class="categories">
+                                                                <a t-att-href="'/shop/category/%s' % slug(categ)" t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''">
+                                                                    <t t-esc="categ.name"/>
+                                                                </a>
+                                                            </li>
+                                                        </t>
+                                                    </t>
+                                                </ul>
+                                            </li>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                            <div class="row" t-att-style="'color: %s' %(submenu.sub_category_color) if submenu.customize_menu_colors and submenu.sub_category_color else ''" t-if="submenu.display_menu_footer">
+                                <div class="footer">
+                                    <t t-raw="submenu.menu_footer"/>
+                                </div>
+                            </div>
+                        </ul>
+                    </t>
+                </li>
+            </xpath>
+        </template>
+        <!-- First / Last pager -->
+        <template id="website_pager_addition" inherit_id="website.pager">
+            <xpath expr="//ul/li" position="before">
+                <t t-if="website.enable_first_last_pager and pager['page_count'] &gt;2">
+                    <li t-att-class=" 'disabled' if pager['page']['num'] == 1 else '' ">
+                        <a t-att-href=" pager['page_first']['url'] if pager['page']['num'] != 1 else ''">First</a>
+                    </li>
+                </t>
+            </xpath>
+            <xpath expr="//ul/li[last()]" position="after">
+                <t t-if="website.enable_first_last_pager and pager['page_count'] &gt;2">
+                    <li t-att-class=" 'disabled' if pager['page']['num'] == pager['page_count'] else '' ">
+                        <a t-att-href="pager['page_last']['url'] if pager['page']['num'] != pager['page_count'] else ''">Last</a>
+                    </li>
+                </t>
+            </xpath>
+        </template>
+        <!-- 404 page -->
+        <template id="404_page_template" inherit_id="website.404">
+            <xpath expr="//div[@id='wrap']" position="replace">
+                <div class="container">
+                    <div class="row section-404 well">
+                        <div class="col-md-12 text-center">
+                            <div class="content-404">
+                                <img src="/theme_mobicraft/static/src/img/404.png"/>
+                                <label>404</label>
+                            </div>
+                            <p class="text-center not-found-message">This is not the webpage you are looking for</p>
+                            <p class="text-center try-pages">Please try one of the following pages
+                            
+                                <span>
+                                    <a t-attf-href="/" title="Home Page">Home Page</a></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+        
+</odoo>

@@ -1,0 +1,1795 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+        <!-- Home Slider snippet -->
+        <template id="s_theme_mobicraft_home_slider_snippet_animated" name="Home Slider">
+            <div class="carousel slide carousel-fade s_theme_mobicraft_home_slider_snippet_animated" data-interval="8000" data-ride="carousel" id="myCarousel">
+                <!-- Indicators -->
+                <ol class="carousel-indicators">
+                    <li class="item1 active"/>
+                    <li class="item2"/>
+                    <li class="item3"/>
+                    <li class="item4"/>
+                </ol>
+                <!-- Wrapper for slides -->
+                <div class="carousel-inner" role="listbox">
+                    <div class="item item-1 active" style="background-image:url(/theme_mobicraft/static/src/img/banner_bg.png)">
+                        <div class="container">
+                            <h5 class="small diff-title">Apple iphone 7</h5>
+                            <h2 class="big">The Sign Of Design With You In Mind</h2>
+                            <div class="banner-button">
+                                <button class="btn btn-default bc-btn">Collections</button>
+                                <button class="btn btn-default bc-btn">Showrooms</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="item item2" style="background-image:url(/theme_mobicraft/static/src/img/banner_bg_2.png)">
+                        <div class="container">
+                            <h5 class="small diff-title">Modern Collections</h5>
+                            <h2 class="big">Lorem Ipsum is simply dummy</h2>
+                            <div class="banner-button">
+                                <button class="btn btn-default bc-btn">Collections</button>
+                                <button class="btn btn-default bc-btn">Showrooms</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Left and right controls -->
+                <a class="carousel-control left" data-slide="prev" data-target="#myCarousel" style="width: 10%">
+                    <i class="fa fa-chevron-left"/>
+                </a>
+                <a class="carousel-control right " data-slide="next" data-target="#myCarousel" style="width: 10%">
+                    <i class="fa fa-chevron-right"/>
+                </a>
+            </div>
+        </template>
+        <!-- Product Slider Snippet -->
+        <template id="s_theme_mobicraft_product_category_slider" name="Product Slider">
+            <section class="oe_pro_cat_slider" contentEditable="false" data-prod-cat-slider-type="">
+                <div class="container">
+                    <div class="row oe_our_slider">
+                        <div class="col-md-12">
+                            <div class="title-block">
+                                <h4 class="diff-title section-title style1" id="snippet-title">
+                                    <span>Product Slider</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <template id="theme_mobicraft_product_category_slider_option" inherit_id="website.snippet_options" name="Modify Options">
+            <xpath expr="//div" position="after">
+                <div data-js="theme_mobicraft_product_category_slider" data-selector=".oe_pro_cat_slider">
+                    <li data-pro_cat_slider="">
+                        <a class="oe_pro_cat_slider">Modify</a>
+                    </li>
+                </div>
+            </xpath>
+        </template>
+        <template id="theme_mobicraft_pro_cat_slider_view" name="Product Slider">
+            <div class="title-block">
+                <h4 class="diff-title" t-if="not slider_header">
+                    <span>Trending</span>
+                </h4>
+                <h4 class="diff-title" t-if="slider_header">
+                    <span>
+                        <t t-esc="slider_header.name"/>
+                    </span>
+                </h4>
+            </div>
+            <div class="psb-inner products-slider-section">
+                <div class="owl-carousel" t-att-id="'%s' % (slider_header.id)" t-if="slider_details">
+                    <t t-as="slide" t-foreach="slider_details">
+                        <div class="cs-product">
+                            <div class="pwp-img">
+                                <div t-att-class="'%s' % slide.product_style_tag_id.color if slide and slide.product_style_tag_id else ''" t-if="slide and slide.product_style_tag_id">
+                                    <t t-esc="slide.product_style_tag_id.name"/>
+                                </div>
+                                <a t-att-href="'/shop/product/%s' % slug(slide)">
+                                    <img class="" t-att-alt="slide.name" t-att-src="website.image_url(slide, 'image')" t-att-title="slide.name"/>
+                                </a>
+                            </div>
+                            <div class="pwp-info">
+                                <p class="pwpi-title">
+                                    <a t-att-href="'/shop/product/%s' % slug(slide)">
+                                        <t t-esc="slide.name"/>
+                                    </a>
+                                </p>
+                                <p class="price">
+                                    <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+
+                                        <b>
+                                            <t t-if="(compute_currency(slide.lst_price) - slide.website_price) &gt; 0.1 and website.get_current_pricelist().discount_policy=='without_discount'">
+                                                <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(slide.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                            </t>
+                                            <span style="white-space: nowrap;" t-field="slide.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                            <span itemprop="price" style="display:none;" t-esc="slide.website_price"/>
+                                            <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                        </b>
+                                    </div>
+                                </p>
+                                <div class="pink-box">
+                                    <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                        <t t-set='rates' t-value="slide.rating_get_stats([('website_published', '=', True)])"/> 
+                                        <t t-call="portal.message_thread">
+                                            <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                            <t t-set="object" t-value="slide"/>
+                                            <t t-set="only_rating" t-value="1"/>
+                                            <t t-set="display_rating" t-value="True"/>
+                                            <t t-set="disable_composer" t-value="True"/>
+                                        </t>
+                                    </ul>
+                                    <div class="view">
+                                        <div class="shopping-cart">
+                                            <a t-attf-href="/shop/product/#{ slug(slide)}">
+                                                <i class="fa fa-shopping-cart"/>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </template>
+        <!-- Brands slider snippet -->
+        <template id="s_theme_mobicraft_brand_custom_slider" name="Brands">
+            <section class="mobicraft_theme_brand_slider" contentEditable="false" data-brand-count="0" data-brand-label="">
+                <div class="container">
+                    <div class="row oe_our_slider our-brands">
+                        <div class="col-md-12">
+                            <div class="title-block">
+                                <h4 class="diff-title section-title style1" id="snippet-title">
+                                    <span>Our Brands</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <template id="theme_mobicraft_brand_custom_slider_option" inherit_id="website.snippet_options" name="Modify Options">
+            <xpath expr="//div" position="after">
+                <div data-js="theme_mobicraft_brand_custom_slider" data-selector=".mobicraft_theme_brand_slider" data-snippet-option-id="theme_mobicraft_brand_custom_slider">
+                    <li data-mobicraft_brand_slider="">
+                        <a class="mobicraft_theme_brand_slider">Modify</a>
+                    </li>
+                </div>
+            </xpath>
+        </template>
+
+        <template id="theme_mobicraft_brand_slider_view" name="Brand Snippet">
+            <div class="our-brand-section">
+                <div class="container">
+                    <div class="row oe_our_slider our-brands">
+                        <div class="col-md-12">
+                            <div class="title-block">
+                                <h4 class="diff-title" t-if="not brand_header">
+                                    <span>Our Brands</span>
+                                </h4>
+                                <h4 class="diff-title" t-if="brand_header">
+                                    <span>
+                                        <t t-esc="brand_header"/>
+                                    </span>
+                                </h4>
+                            </div>
+                            <div class="psb-inner">
+                                <t t-if="website_brands">
+                                    <div class="owl-carousel" id="theme_mobicraft_brand_slider" t-if="website_brands">
+                                        <t t-as="brand" t-foreach="website_brands">
+                                            <a t-attf-href="/shop/brands?brand=#{ brand.id }">
+                                                <div class="barnd-img text-center">
+                                                    <img t-att-alt="brand.name" t-att-src="website.image_url(brand, 'brand_logo')" t-att-title="brand.name"/>
+                                                </div>
+                                            </a>
+                                        </t>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- Single Banner snippet -->
+        <template id="s_theme_mobicraft_single_banner_snippet" name="Single banner without slider">
+            <section class="new-collection s_theme_mobicraft_single_banner_snippet">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <img alt="iPhone" class="img img-responsive" src="/theme_mobicraft/static/src/img/blue-chair.png" title="iPhone"/>
+                        </div>
+                        <div class="col-md-6 col-sm-6 col-xs-12">
+                            <div class="text-block">
+                                <div class="inner-content">
+                                    <h3 class="diff-title">Lorem Ipsum Is Simply</h3>
+                                    <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse
+                                molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero
+                                eros et accumsan et iusto odio dignissim qui blandit praesent luptatum
+                                zzril delenit augue duis dolore te feugait nulla facilisi.</p>
+                                </div>
+                                <div class="btn-box">
+                                    <a href="#">Shop now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <!-- Multi Product slider snippet -->
+        <template id="s_theme_mobicraft_multi_cat_custom_snippet" name="Multi Product Tabs Slider">
+            <section class="oe_multi_category_slider" contentEditable="false" data-multi-cat-slider-type="">
+                <div class="container">
+                    <div class="row our-categories">
+                        <div class="col-md-12">
+                            <div class="title-block">
+                                <h4 class="diff-title section-title style1" id="snippet-title">
+                                    <span>Multi Product Tabs Slider</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <template id="theme_mobicraft_multi_cat_slider_option" inherit_id="website.snippet_options" name="Modify Options">
+            <xpath expr="//div" position="after">
+                <div data-js="theme_mobicraft_multi_cat_custom_snippet" data-selector=".oe_multi_category_slider" data-snippet-option-id="theme_mobicraft_multi_cat_custom_snippet">
+                    <li data-multi_category_slider="">
+                        <a class="oe_multi_category_slider">Modify</a>
+                    </li>
+                </div>
+            </xpath>
+        </template>
+        <template id="theme_mobicraft_multi_cat_slider_view" name="Multi Product Tabs Snippet">
+            <div class="container">
+                <div class="title-block">
+                    <h4 class="diff-title section-title style1" t-if="not slider_header">
+                        <span>Trending</span>
+                    </h4>
+                    <h4 class="diff-title section-title style1" t-if="slider_header">
+                        <span>
+                            <t t-esc="slider_header.name"/>
+                        </span>
+                    </h4>
+                </div>
+                <div class="lns-inner latest-news-section">
+                    <div class="row">
+                        <div class="lns-post">
+                            <div class="psb-inner">
+                                <ul class="nav nav-tabs" id="multi_dynamic_slider_tabs">
+                                    <t t-if="slider_details.no_of_collection == '2'">
+                                        <li class="active my-test">
+                                            <a data-toggle="tab" href="#multi-collection1">
+                                                <t t-esc="slider_details.label_collection_1"/>
+                                            </a>
+                                        </li>
+                                        <li class="my-test">
+                                            <a data-toggle="tab" href="#multi-collection2">
+                                                <t t-esc="slider_details.label_collection_2"/>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <t t-if="slider_details.no_of_collection == '3'">
+                                        <li class="active">
+                                            <a data-toggle="tab" href="#multi-collection1">
+                                                <t t-esc="slider_details.label_collection_1"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection2">
+                                                <t t-esc="slider_details.label_collection_2"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection3">
+                                                <t t-esc="slider_details.label_collection_3"/>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <t t-if="slider_details.no_of_collection == '4'">
+                                        <li class="active">
+                                            <a data-toggle="tab" href="#multi-collection1">
+                                                <t t-esc="slider_details.label_collection_1"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection2">
+                                                <t t-esc="slider_details.label_collection_2"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection3">
+                                                <t t-esc="slider_details.label_collection_3"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection4">
+                                                <t t-esc="slider_details.label_collection_4"/>
+                                            </a>
+                                        </li>
+                                    </t>
+                                    <t t-if="slider_details.no_of_collection == '5'">
+                                        <li class="active">
+                                            <a data-toggle="tab" href="#multi-collection1">
+                                                <t t-esc="slider_details.label_collection_1"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection2">
+                                                <t t-esc="slider_details.label_collection_2"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection3">
+                                                <t t-esc="slider_details.label_collection_3"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection4">
+                                                <t t-esc="slider_details.label_collection_4"/>
+                                            </a>
+                                        </li>
+                                        <li class="">
+                                            <a data-toggle="tab" href="#multi-collection5">
+                                                <t t-esc="slider_details.label_collection_5"/>
+                                            </a>
+                                        </li>
+                                    </t>
+                                </ul>
+                                <div class="tab-content">
+                                    <t t-if="slider_details.no_of_collection == '2'">
+                                        <div class="active multi_hide" id="multi-collection1">
+                                            <div class="owl-carousel" t-att-id="'multi-collection1-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_1_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)"  t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection2">
+                                            <div class="owl-carousel" t-att-id="'multi-collection2-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_2_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-if="slider_details.no_of_collection == '3'">
+                                        <div class="active multi_hide" id="multi-collection1">
+                                            <div class="owl-carousel" t-att-id="'multi-collection1-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_1_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection2">
+                                            <div class="owl-carousel" t-att-id="'multi-collection2-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_2_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection3">
+                                            <div class="owl-carousel" t-att-id="'multi-collection3-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_3_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-if="slider_details.no_of_collection == '4'">
+                                        <div class="active multi_hide" id="multi-collection1">
+                                            <div class="owl-carousel" t-att-id="'multi-collection1-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_1_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection2">
+                                            <div class="owl-carousel" t-att-id="'multi-collection2-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_2_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection3">
+                                            <div class="owl-carousel" t-att-id="'multi-collection3-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_3_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection4">
+                                            <div class="owl-carousel" t-att-id="'multi-collection4-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_4_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                    <t t-if="slider_details.no_of_collection == '5'">
+                                        <div class="active multi_hide" id="multi-collection1">
+                                            <div class="owl-carousel" t-att-id="'multi-collection1-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_1_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection2">
+                                            <div class="owl-carousel" t-att-id="'multi-collection2-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_2_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection3">
+                                            <div class="owl-carousel" t-att-id="'multi-collection3-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_3_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection4">
+                                            <div class="owl-carousel" t-att-id="'multi-collection4-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_4_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                        <div class="multi_hide" id="multi-collection5">
+                                            <div class="owl-carousel" t-att-id="'multi-collection5-%s-%s' %(slider_header.no_of_collection, slider_details.id)" t-if="slider_details">
+                                                <t t-as="product" t-foreach="slider_details.collection_5_ids">
+                                                    <div class="cs-product">
+                                                        <div class="pwp-img">
+                                                            <div t-att-class="'%s' % product.product_style_tag_id.color if product and product.product_style_tag_id else ''" t-if="product and product.product_style_tag_id">
+                                                                <t t-esc="product.product_style_tag_id.name"/>
+                                                            </div>
+                                                            <a t-att-href="'/shop/product/%s' % slug(product)">
+                                                                <img class="" t-att-alt="product.name" t-att-src="website.image_url(product, 'image')" t-att-title="product.name"/>
+                                                            </a>
+                                                        </div>
+                                                        <div class="pwp-info">
+                                                            <p class="pwpi-title">
+                                                                <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                    <span t-field="product.name"/>
+                                                                </a>
+                                                            </p>
+                                                            <p class="price">
+                                                                <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                    <b>
+                                                                        <t t-if="(compute_currency(product.lst_price) - product.website_price) &gt; 0.1">
+                                                                            <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                        </t>
+                                                                        <span style="white-space: nowrap;" t-field="product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                        <span itemprop="price" style="display:none;" t-esc="product.website_price"/>
+                                                                        <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                    </b>
+                                                                </div>
+                                                            </p>
+                                                            <div class="pink-box">
+                                                                <ul class="ratings" t-if="request.env.ref('website_sale.product_comment').active">
+                                                                    <t t-set='rates' t-value="product.rating_get_stats([('website_published', '=', True)])"/> 
+                                                                    <t t-call="portal.message_thread">
+                                                                        <t t-set="rating_val" t-value="rates.get('avg')" t-if="rates and rates.get('avg')"/>
+                                                                        <t t-set="object" t-value="product"/>
+                                                                        <t t-set="only_rating" t-value="1"/>
+                                                                        <t t-set="display_rating" t-value="True"/>
+                                                                        <t t-set="disable_composer" t-value="True"/>
+                                                                    </t>
+                                                                </ul>
+                                                                <div class="view">
+                                                                    <div class="shopping-cart">
+                                                                        <a t-attf-href="/shop/product/#{ slug(product) }">
+                                                                            <i aria-hidden="true" class="fa fa-shopping-cart"/>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- Blog Slider Snippet -->
+        <template id="s_theme_mobicraft_blog_custom_snippet" name="Blog Slider">
+            <section class="mobicraft_theme_blog_slider" contentEditable="false" data-blog-slider-type="">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="title-block">
+                                <h4 class="diff-title section-title style1" id="snippet-title">
+                                    <span>Blog post slider</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <template id="theme_mobicraft_blog_slider_option" inherit_id="website.snippet_options" name="Modify Options">
+            <xpath expr="//div" position="after">
+                <div data-js="theme_mobicraft_blog_custom_snippet" data-selector=".mobicraft_theme_blog_slider" data-snippet-option-id="theme_mobicraft_blog_custom_snippet">
+                    <li data-king_blog_slider="">
+                        <a class="mobicraft_theme_blog_slider">Modify</a>
+                    </li>
+                </div>
+            </xpath>
+        </template>
+        <template id="theme_mobicraft_blog_slider_view" name="Blog Snippet">
+            <div class="container">
+                <div class="title-block">
+                    <h4 class="diff-title section-title style1" t-if="not slider_header">
+                        <span>Blog post slider</span>
+                    </h4>
+                    <h4 class="diff-title section-title style1" t-if="slider_header">
+                        <span>
+                            <t t-esc="slider_header.name"/>
+                        </span>
+                    </h4>
+                </div>
+                <div class="lns-inner latest-news-section">
+                    <div class="row">
+                        <div class="container">
+                            <div class="lns-post">
+                                <div class="psb-inner">
+                                    <div class="owl-carousel" t-att-id="'%s-%s' % (slider_header.no_of_counts, slider_header.id)" t-if="blog_slider_details">
+                                        <t t-as="slide" t-foreach="blog_slider_details">
+                                            <t t-set="website_blog" t-value="json.loads(slide.cover_properties)"/>
+                                            <div class="post-img">
+                                                <a t-attf-href="/blog/#{ slug(slide.blog_id) }/post/#{ slug(slide) }">
+                                                    <div t-att-style="'background-image: %s; background-size: cover; width: 400px; height:300px;' % website_blog.get('background-image') if website_blog.get('background-image') != 'none' else 'background: black; background-size: cover; width: 400px; height:300px;'"/>
+                                                </a>
+                                                <div class="blog-meta">
+                                                    <h3>
+                                                        <a t-attf-href="/blog/#{ slug(slide.blog_id) }/post/#{ slug(slide) }">
+                                                            <h4>
+                                                                <span t-field="slide.name"/>
+                                                            </h4>
+                                                        </a>
+                                                    </h3>
+                                                    <span class="pull-left text-left">by 
+                                                        
+                                                        
+                                                        <t t-esc="slide.author_id.name"/></span>
+                                                    <span class="time pull-right text-right">
+                                                        <span class="fa fa-clock-o"/>
+                                                        <t t-esc="slide.create_date"/>
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!--Collection snippet-->
+        <template id="s_theme_mobicraft_promo_collection" name="Collection">
+            <section class="collection s_theme_mobicraft_promo_collection">
+                <div class="container">
+                    <div class="row">
+                        <section class="col-md-4 col-sm-4">
+                        <a href="#" class="light-color-div">
+                            <section class="block-img light-color-div" style="background-image:url('/theme_mobicraft/static/src/img/promo-1.png');">
+                                <div class="dark"/>
+                                <div class="inside-collection">
+                                    <div class="wrap_3">
+                                        <h3>Apple Accessories</h3>
+
+                                        <p>Redesigned. Rechargeable.</p>
+
+                                        <a class="btn homepage_btn" href="#">Shop now!</a>
+                                    </div>
+                                </div>
+                            </section>
+                        </a>
+                        </section>
+                        <section class="col-md-4 col-sm-4">
+                        <a href="#" class="theme-color-div">
+                            <section class=" block-img theme-color-div" style="background-image:url('/theme_mobicraft/static/src/img/promo-2.png');">
+                                <div class="dark"/>
+                                <div class="inside-collection">
+                                    <div class="wrap_3">
+                                        <h3>Smart Keyboard</h3>
+
+                                        <p>The only thing we didn’t  reinvent was the alphabet.</p>
+
+                                        <a class="btn homepage_btn" href="#">Shop now!</a>
+                                    </div>
+                                </div>
+                            </section>
+                        </a>
+                        </section>
+                        <section class="col-md-4 col-sm-4">
+                        <a href="#" class="no-color-div">
+                            <section class=" block-img no-color-div" style="background-image:url('/theme_mobicraft/static/src/img/promo-3.png');">
+                                <div class="dark"/>
+                                <div class="inside-collection">
+                                    <div class="wrap_3">
+                                        <h3>Mac mini</h3>
+
+                                        <p>It’s mini in a massive way.</p>
+
+                                        <a class="btn homepage_btn" href="#">Shop now!</a>
+                                    </div>
+                                </div>
+                            </section>
+                        </a>
+                    </section>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <!--Promo static snippet-->
+        <template id="s_theme_mobicraft_promo" name="Promo">
+            <section class="collection promo s_theme_mobicraft_promo">
+                <div class="container">
+                    <div class="row">
+                        <section class="col-md-6 col-sm-6">
+                        <a href="#" class="light-color-div">
+                            <section class="block-img light-color-div" style="background-image:url('/theme_mobicraft/static/src/img/big-promo-1.jpg');">
+                                <div class="dark"/>
+                                <div class="inside-collection">
+                                    <div class="wrap_3">
+                                        <h3>Apple iphone 6</h3>
+                                        <p class="sub-line">EVOLUTION INSIDE</p>
+
+                                        <p>The Sign Of Design <br/> with you in mind </p>
+
+                                        <a href="#" class="btn homepage_btn">Shop now!</a>
+                                    </div>
+                                </div>
+                            </section>
+                        </a>
+                        </section>
+                        <section class="col-md-6 col-sm-6">
+                        <a href="#" class="theme-color-div">
+                            <section class=" block-img theme-color-div" style="background-image:url('/theme_mobicraft/static/src/img/big-promo-1.png');">
+                                <div class="dark"/>
+                                <div class="inside-collection">
+                                    <div class="wrap_3">
+                                        <h3>Apple Airpods</h3>
+                                        <p class="sub-line">CABLES ARE PAST</p>
+
+                                        <p>the new headphones comes with your <br/>   iphone right in your box </p>
+
+                                        <a href="#" class="btn homepage_btn">Shop now!</a>
+                                    </div>
+                                </div>
+                            </section>
+                        </a>
+                        </section>
+                    
+                    </div>
+                </div>
+            </section>
+        </template>
+        <!-- Single Banner snippet -->
+        <template id="s_theme_mobicraft_single_banner_snippet_text" name="Single banner text only">
+            <section class="new-collection_text s_theme_mobicraft_single_banner_snippet_text" style="background-image:url(/theme_mobicraft/static/src/img/only-text-bg.jpg)">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="only_text-block">
+                                <div class="inner-content-text">
+                                    <h3 class="diff-title">
+                                       <span class="jumbo"> GET 20% OFF </span>
+                                       <br/>
+                                       <span class="jumbo-sub">ON SELECTED ITEMS.</span>
+                                    </h3>
+                                    
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <!-- newsletter snippet -->
+        <template id="s_theme_mobicraft_newsletter" name="Newsletter">
+            <section class="bg-newsletter s_theme_mobicraft_newsletter" style="background-image:url(/theme_mobicraft/static/src/img/newsletter-bg.png)">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="newsletter-outer">
+                                <div class="newsletter-inner">
+                                    <h3 class="fur-title diff-title">Newsletter</h3>
+                                    <p>Subscribe to our email newsletter &amp; receive updates right in your inbox.</p>
+                                    <div class="email-box">
+                                        <div class="input-group js_subscribe">
+                                            <input class="js_subscribe_email form-control" name="email" placeholder="your email..." type="email"/>
+                                            <span class="input-group-btn">
+                                                <a class="btn btn-primary js_subscribe_btn" href="#">Subscribe</a>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <!-- Category Slider Snippet -->
+        <template id="s_theme_mobicraft_category_slider" name="Category Slider">
+            <section class="oe_cat_slider categ_slider s_theme_mobicraft_category_slider" contentEditable="false" data-cat-slider-id="" id="theme_mobicraft_custom_category_slider">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="title-block">
+                                <h4 class="diff-title section-title style1" id="snippet-title">
+                                    <span>Category slider</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <template id="theme_mobicraft_category_slider_option" inherit_id="website.snippet_options" name="Modify Options">
+            <xpath expr="//div" position="after">
+                <div data-js="theme_mobicraft_category_slider" data-selector=".oe_cat_slider">
+                    <li data-cat_slider="">
+                        <a class="oe_cat_slider">Modify</a>
+                    </li>
+                </div>
+            </xpath>
+        </template>
+        <template id="theme_mobicraft_cat_slider_view" name="Category Slider">
+            <div class="container">
+                <div class="category-slider-section">
+                    <div class="block-title title-block">
+                        <h4 class="fancy diff-title" t-if="not slider_header">Category Slider</h4>
+                        <h4 class="fancy diff-title" t-if="slider_header">
+                            <t t-esc="slider_header.name"/>
+                        </h4>
+                    </div>
+                    <div class="owl-carousel" t-att-id="'%s-%s' % (slider_header.name.lower().replace (' ', '-'), slider_header.id)" t-if="slider_details">
+                        <t t-as="slide" t-foreach="slider_details">
+                            <div class="cs-cat">
+                                <div class="cs-img">
+                                    <a t-att-href=" '/shop/category/%s' % slug(slide)">
+                                        <img t-att-alt="slide.name" t-att-src="website.image_url(slide, 'image')" t-att-title="slide.name"/>
+                                    </a>
+                                </div>
+                                <div class="cs-info" id="only_categories">
+                                    <p class="pwpi-title">
+                                        <a t-att-href="'/shop/category/%s' % slug(slide)">
+                                            <t t-esc="slide.name"/>
+                                        </a>
+                                    </p>
+                                    <label><t t-esc="slide.linked_product_count"/> Product(s)</label>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <!-- Featured Product Slider Snippet -->
+        <template id="s_theme_mobicraft_featured_product_slider" name="Featured Products Slider">
+            <section class="oe_featured_prod_slider" contentEditable="false" data-featured-prod-slider-id="" id="theme_mobicraft_custom_featured_product_theme">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="title-block">
+                                <h4 class="diff-title section-title style1" id="snippet-title">
+                                    <span>Featured Product Slider</span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </template>
+        <template id="theme_mobicraft_featured_product_slider_option" inherit_id="website.snippet_options" name="Modify Options">
+            <xpath expr="//div" position="after">
+                <div data-js="theme_mobicraft_featured_product_slider" data-selector=".oe_featured_prod_slider">
+                    <li data-featured_prod_slider="">
+                        <a class="oe_featured_prod_slider">Modify</a>
+                    </li>
+                </div>
+            </xpath>
+        </template>
+        <template id="theme_mobicraft_featured_product_slider_view" name="Featured Products Slider">
+            <div class="container">
+                <div class="block-title title-block">
+                    <h4 class="fancy diff-title" t-if="not slider_header">Featured Products Slider</h4>
+                    <h4 class="fancy diff-title" t-if="slider_header">
+                        <t t-esc="slider_header.name"/>
+                    </h4>
+                </div>
+                <div class="row" id="div_theme_mobicraft_custom_featured_product_theme">
+                    <!-- Feature Product Collections -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="fps-inner">
+                            <h3 t-esc="slider_header.feature_name"/>
+                            <div class="carousel slide" data-ride="carousel" id="myCarousel-feature_products_collections">
+                                <div class="carousel-inner">
+                                    <t t-set="a" t-value="1"/>
+                                    <t t-as="rel_products" t-foreach="website.get_feature_products_collections(slider_header)">
+                                        <div t-att-class="'item active' if a == 1 else 'item'">
+                                            <t t-as="rel_product" t-foreach="rel_products">
+                                                <t t-set="a" t-value="a+1"/>
+                                                <div class="cs-product">
+                                                    <div class="pwp-img">
+                                                        <a t-att-href="'/shop/product/%s' % slug(rel_product)">
+                                                            <img t-att-alt="rel_product.name" t-att-src="website.image_url(rel_product, 'image')" t-att-title="rel_product.name"/>
+                                                        </a>
+                                                    </div>
+                                                    <div class="pwp-info">
+                                                        <p class="pwpi-title">
+                                                            <a t-attf-href="/shop/product/#{ slug(rel_product) }">
+                                                                <span t-field="rel_product.name"/>
+                                                            </a>
+                                                        </p>
+                                                        <div class="price">
+                                                            <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                <b>
+                                                                    <t t-if="(compute_currency(rel_product.lst_price) - rel_product.website_price) &gt; 0.1">
+                                                                        <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(rel_product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                    </t>
+                                                                    <span style="white-space: nowrap;" t-field="rel_product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                    <span itemprop="price" style="display:none;" t-esc="rel_product.website_price"/>
+                                                                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                </b>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="carousel-control left" data-slide="prev" data-target="#myCarousel-feature_products_collections">
+                                <i class="fa fa-chevron-left"/>
+                            </div>
+                            <div class="carousel-control right" data-slide="next" data-target="#myCarousel-feature_products_collections">
+                                <i class="fa fa-chevron-right"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- On Sale Collections -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="fps-inner">
+                            <h3 t-esc="slider_header.on_sale_name"/>
+                            <div class="carousel slide" data-ride="carousel" id="myCarousel-on_sale_collections">
+                                <div class="carousel-inner">
+                                    <t t-set="a" t-value="1"/>
+                                    <t t-as="rel_products" t-foreach="website.get_on_sale_collections(slider_header)">
+                                        <div t-att-class="'item active' if a == 1 else 'item'">
+                                            <t t-as="rel_product" t-foreach="rel_products">
+                                                <t t-set="a" t-value="a+1"/>
+                                                <div class="cs-product">
+                                                    <div class="pwp-img">
+                                                        <a t-att-href="'/shop/product/%s' % slug(rel_product)">
+                                                            <img t-att-alt="rel_product.name" t-att-src="website.image_url(rel_product, 'image')" t-att-title="rel_product.name"/>
+                                                        </a>
+                                                    </div>
+                                                    <div class="pwp-info">
+                                                        <p class="pwpi-title">
+                                                            <a t-attf-href="/shop/product/#{ slug(rel_product) }">
+                                                                <span t-field="rel_product.name"/>
+                                                            </a>
+                                                        </p>
+                                                        <div class="price">
+                                                            <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                <b>
+                                                                    <t t-if="(compute_currency(rel_product.lst_price) - rel_product.website_price) &gt; 0.1">
+                                                                        <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(rel_product.website_public_price)"  t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                    </t>
+                                                                    <span style="white-space: nowrap;" t-field="rel_product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                    <span itemprop="price" style="display:none;" t-esc="rel_product.website_price"/>
+                                                                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                </b>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="carousel-control left" data-slide="prev" data-target="#myCarousel-on_sale_collections">
+                                <i class="fa fa-chevron-left"/>
+                            </div>
+                            <div class="carousel-control right" data-slide="next" data-target="#myCarousel-on_sale_collections">
+                                <i class="fa fa-chevron-right"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Random Products Collections -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="fps-inner">
+                            <h3 t-esc="slider_header.random_name"/>
+                            <div class="carousel slide" data-ride="carousel" id="myCarousel-random_products_collections">
+                                <div class="carousel-inner">
+                                    <t t-set="a" t-value="1"/>
+                                    <t t-as="rel_products" t-foreach="website.get_random_products_collections(slider_header)">
+                                        <div t-att-class="'item active' if a == 1 else 'item'">
+                                            <t t-as="rel_product" t-foreach="rel_products">
+                                                <t t-set="a" t-value="a+1"/>
+                                                <div class="cs-product">
+                                                    <div class="pwp-img">
+                                                        <a t-att-href="'/shop/product/%s' % slug(rel_product)">
+                                                            <img t-att-alt="rel_product.name" t-att-src="website.image_url(rel_product, 'image')" t-att-title="rel_product.name"/>
+                                                        </a>
+                                                    </div>
+                                                    <div class="pwp-info">
+                                                        <p class="pwpi-title">
+                                                            <a t-attf-href="/shop/product/#{ slug(rel_product) }">
+                                                                <span t-field="rel_product.name"/>
+                                                            </a>
+                                                        </p>
+                                                        <div class="price">
+                                                            <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                <b>
+                                                                    <t t-if="(compute_currency(rel_product.lst_price) - rel_product.website_price) &gt; 0.1">
+                                                                        <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(rel_product.website_public_price)"  t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                    </t>
+                                                                    <span style="white-space: nowrap;" t-field="rel_product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                    <span itemprop="price" style="display:none;" t-esc="rel_product.website_price"/>
+                                                                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                </b>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="carousel-control left" data-slide="prev" data-target="#myCarousel-random_products_collections">
+                                <i class="fa fa-chevron-left"/>
+                            </div>
+                            <div class="carousel-control right" data-slide="next" data-target="#myCarousel-random_products_collections">
+                                <i class="fa fa-chevron-right"/>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Low Price Collection -->
+                    <div class="col-md-3 col-sm-6 col-xs-12">
+                        <div class="fps-inner">
+                            <h3 t-esc="slider_header.low_price_name"/>
+                            <div class="carousel slide" data-ride="carousel" id="myCarousel-low_price_collections">
+                                <div class="carousel-inner">
+                                    <t t-set="a" t-value="1"/>
+                                    <t t-as="rel_products" t-foreach="website.get_low_price_collections(slider_header)">
+                                        <div t-att-class="'item active' if a == 1 else 'item'">
+                                            <t t-as="rel_product" t-foreach="rel_products">
+                                                <t t-set="a" t-value="a+1"/>
+                                                <div class="cs-product">
+                                                    <div class="pwp-img">
+                                                        <a t-att-href="'/shop/product/%s' % slug(rel_product)">
+                                                            <img t-att-alt="rel_product.name" t-att-src="website.image_url(rel_product, 'image')" t-att-title="rel_product.name"/>
+                                                        </a>
+                                                    </div>
+                                                    <div class="pwp-info">
+                                                        <p class="pwpi-title">
+                                                            <a t-attf-href="/shop/product/#{ slug(rel_product) }">
+                                                                <span t-field="rel_product.name"/>
+                                                            </a>
+                                                        </p>
+                                                        <div class="price">
+                                                            <div class="product_price price" itemprop="offers" itemscope="itemscope" itemtype="http://schema.org/Offer">
+                                                                <b>
+                                                                    <t t-if="(compute_currency(rel_product.lst_price) - rel_product.website_price) &gt; 0.1">
+                                                                        <del class="text-danger mr8" style="white-space: nowrap;" t-esc="compute_currency(rel_product.website_public_price)" t-options="{'widget': 'monetary', 'display_currency': website.get_current_pricelist().currency_id, 'from_currency': website.currency_id}"/>
+                                                                    </t>
+                                                                    <span style="white-space: nowrap;" t-field="rel_product.website_price" t-options="{'widget': 'monetary', 'display_currency': website.currency_id}"/>
+                                                                    <span itemprop="price" style="display:none;" t-esc="rel_product.website_price"/>
+                                                                    <span itemprop="priceCurrency" style="display:none;" t-esc="website.currency_id.name"/>
+                                                                </b>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </div>
+                            <div class="carousel-control left" data-slide="prev" data-target="#myCarousel-low_price_collections">
+                                <i class="fa fa-chevron-left"/>
+                            </div>
+                            <div class="carousel-control right" data-slide="next" data-target="#myCarousel-low_price_collections">
+                                <i class="fa fa-chevron-right"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Testimonial - 1 -->
+        <template id="s_theme_mobicraft_testimonial" name="Testimonials">
+            <section class="testimonials testimonial-slider-home s_theme_mobicraft_testimonial">
+                <div class="container">
+                    <div class="row">
+                        <div class="title-block">
+                            <h4 class="diff-title section-title style1">
+                                <span>Testimonials</span>
+                            </h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="container">
+                    <div class="carousel slide" data-ride="carousel" id="myCarousel">
+                        <div class="carousel-inner" role="listbox">
+                            <div class="item active">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="testimonial">
+                                        <div class="box">
+                                           <img alt="img" class="quote-icon img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/quote.png" title="img"/>
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                        <div class="team-img">
+                                            <img alt="img" class="img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/client.png" title="img"/>
+                                            <span class="author ">Ronnie Director - 
+                                                <span class="company-name">Biztech</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="testimonial">
+                                        <div class="box">
+                                            <img alt="img" class="quote-icon img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/quote.png" title="img"/>
+                                            <p>
+                                               Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                               </p>
+                                        </div>
+                                        <div class="team-img">
+                                            <img alt="img" class="img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/client.png" title="img"/>
+                                            <span class="author">John F. Keneddy- 
+                                                <span class="company-name">Biztech</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="testimonial">
+                                        <div class="box">
+                                            <img alt="img" class="quote-icon img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/quote.png" title="img"/>
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                        <div class="team-img">
+                                            <img alt="img" class="img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/client.png" title="img"/>
+                                            <span class="author ">Johnson - 
+                                                <span class="company-name">Biztech</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="testimonial">
+                                        <div class="box">
+                                            <img alt="img" class="quote-icon img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/quote.png" title="img"/>
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                        <div class="team-img">
+                                            <img alt="img" class="img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/client.png" title="img"/>
+                                            <span class="author ">Ronnie Director - 
+                                                <span class="company-name">Biztech</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="testimonial">
+                                        <div class="box">
+                                            <img alt="img" class="quote-icon img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/quote.png" title="img"/>
+                                            <p>
+                                               Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                               </p>
+                                        </div>
+                                        <div class="team-img">
+                                            <img alt="img" class="img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/client.png" title="img"/>
+                                            <span class="author">John F. Keneddy- 
+                                                <span class="company-name">Biztech</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-sm-4 col-xs-12">
+                                    <div class="testimonial">
+                                        <div class="box">
+                                            <img alt="img" class="quote-icon img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/quote.png" title="img"/>
+                                            <p>
+                                                Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.
+                                            </p>
+                                        </div>
+                                        <div class="team-img">
+                                            <img alt="img" class="img-responsive img-circle  text-center" src="/theme_mobicraft/static/src/img/client.png" title="img"/>
+                                            <span class="author ">Johnson - 
+                                                <span class="company-name">Biztech</span>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-control left hidden" data-target="#myCarousel" data-slide="prev" style="width: 10%"><i class="fa fa-chevron-left"></i></div>
+                        <div class="carousel-control right hidden" data-target="#myCarousel" data-slide="next" style="width: 10%"><i class="fa fa-chevron-right"></i></div>
+                    </div>
+                </div>
+            </section>
+        </template>
+
+        <!-- Crafito Snippets collections -->
+        <template id="theme_mobicraft_extra_snippet" inherit_id="website.snippets" name="Theme Crafito Extra Snippet">
+            <xpath expr="//ul/li[last()]" position="after">
+                <li>
+                    <a class="scroll-link" href="#snippet_theme_mobicraft">
+                        <span class="fa-stack fa-lg">
+                            <i class="fa fa-square fa-stack-2x fa-inverse"/>
+                            <i class="fa fa-home fa-stack-1x"/>
+                        </span>
+                    </a>
+                </li>
+            </xpath>
+            <xpath expr="//div[@id='o_scroll']" position="inside">
+                <div class="o_panel" id="snippet_theme_mobicraft">
+                    <div class="o_panel_header">
+                        <span class="fa-stack">
+                            <i class="fa fa-home fa-stack-1x"/>
+                        </span>Theme Mobicraft</div>
+                    <div class="o_panel_body">
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_home_slider_snippet_animated" t-thumbnail="/theme_mobicraft/static/src/img/icons/tabs.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_single_banner_snippet" t-thumbnail="/theme_mobicraft/static/src/img/icons/banner-without-slider.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_single_banner_snippet_text" t-thumbnail="/theme_mobicraft/static/src/img/icons/tabs.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_testimonial" t-thumbnail="/theme_mobicraft/static/src/img/icons/testimonials.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_product_category_slider" t-thumbnail="/theme_mobicraft/static/src/img/icons/product-category-slider.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_brand_custom_slider" t-thumbnail="/theme_mobicraft/static/src/img/icons/brand.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_blog_custom_snippet" t-thumbnail="/theme_mobicraft/static/src/img/icons/blog.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_multi_cat_custom_snippet" t-thumbnail="/theme_mobicraft/static/src/img/icons/tabs.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_promo_collection" t-thumbnail="/theme_mobicraft/static/src/img/icons/tabs.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_promo" t-thumbnail="/theme_mobicraft/static/src/img/icons/tabs.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_newsletter" t-thumbnail="/theme_mobicraft/static/src/img/icons/tabs.png"/>
+
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_category_slider" t-thumbnail="/theme_mobicraft/static/src/img/icons/tabs.png"/>
+                        <t t-snippet="theme_mobicraft.s_theme_mobicraft_featured_product_slider" t-thumbnail="/theme_mobicraft/static/src/img/icons/tabs.png"/>
+                    </div>
+                </div>
+            </xpath>
+        </template>
+</odoo>
