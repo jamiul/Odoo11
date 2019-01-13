@@ -1,0 +1,32 @@
+php bin/magento setup:upgrade
+php bin/magento setup:di:compile
+php bin/magento setup:static-content:deploy -f
+php bin/magento cache:clean
+php bin/magento cache:flush
+
+# module Enable
+sudo php bin/magento module:enable
+
+#Using Composer install theme
+composer require hiddentechies/theme-frontend-bizkick
+
+# For Developer mode
+php bin/magento deploy:mode:set  developer
+
+
+# Uninstall a theme
+SELECT * FROM core_config_data WHERE core_config_data.value = '5'
+SELECT * FROM theme
+php bin/magento indexer:reindex
+php bin/magento cache:flush
+
+# Folder permission
+sudo chmod 777 -R generated
+tail -f var/log/exception.log
+sudo chown www-data:www-data -R FolderName
+sudo chmod 777 -R /var
+
+# Reindexer 
+bin/magento indexer:info
+(it will be show the all table
+html$ bin/magento indexer:status
