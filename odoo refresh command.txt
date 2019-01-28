@@ -1,0 +1,15 @@
+delete from account_partial_reconcile;
+delete from account_move_line;
+delete from account_invoice;
+delete from account_move;
+delete from sale_order;
+delete from stock_move;
+delete from stock_quant;
+delete from mrp_bom_line;
+delete from mrp_production;
+delete from product_product;
+delete from mrp_bom;
+delete from product_template;
+delete from stock_picking;
+delete from account_bank_statement;
+
