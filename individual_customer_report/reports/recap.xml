@@ -16,10 +16,10 @@
     </record>
 
     <report id="recap_report"
-            model="attendance.recap.report.wizard"
+          model="attendance.recap.report.wizard"
             string="Customer Details Report"
             report_type="qweb-html"
-            name="cj_custom_report.attendance_recap_report_view"
+            name="individual_customer_report.attendance_recap_report_view"
             paperformat="paperformat_attendance_recap_report"
             menu="False"/>
 
@@ -44,7 +44,7 @@
                     <th class="text-center" style="width: 10%">Total</th>
                     <th class="text-center" style="width: 10%">Due</th>
                     <th class="text-center" style="width: 20%">Payment</th>
-                    <th class="text-center" style="width: 10%">Method</th>
+                    <th class="text-center" style="width: 10%">Journal</th>
 				</thead>
 				<tbody>
 			    <t t-foreach="invoices" t-as="i">
@@ -101,7 +101,7 @@
            <td><!-- Payment type table -->
            <table class="table table-condensed table-bordered" style="width: 100%">
            	<thead>
-           		<th class="text-center" style="width: 50%">Methods</th>
+           		<th class="text-center" style="width: 50%">Method</th>
            	</thead>
            <tbody>
            		<t t-foreach="i.payment_move_line_ids" t-as="p">
@@ -118,26 +118,6 @@
       </tbody>
     </table>
  </div>	  
-       <!--   <div class="article">
-            <table class="table table-condensed table-bordered" style="width: 100%">
-                <thead>
-                    <th class="text-center" style="width: 30%">Name</th>
-                    <th class="text-center" style="width: 70%">Description</th>
-                </thead>
-                <tbody>
-                    <t t-foreach="courses" t-as="course">
-                        <tr>
-                            <td class="text-center" style="width: 70%">
-                                <span t-esc="course.name"/>
-                            </td>
-                           <td class="text-center" style="width: 70%">
-                                <span t-esc="course.description"/>
-                            </td>
-                        </tr>
-                    </t>
-                </tbody>
-            </table>
-        </div>-->
         <div class="footer">
             <div class="row text-center" style="border-top: 1px solid black;">
                 <div class="col-xs-3 col-xs-offset-9 text-right">
@@ -154,6 +134,7 @@
                 </div>
             </div> 
         </div>
+        
 <style>
 table { width: 100%; border-collapse: collapse;}
 td { border: 1px solid #000; }
@@ -161,6 +142,6 @@ td table {
   margin: -2px;
   width: calc(100% + 4px);
 }
-</style>
+</style>        
 </template>
 </odoo>

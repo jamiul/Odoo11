@@ -1,0 +1,39 @@
+<odoo>
+  <data>
+          <record id="view_invoice_form_fees_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.form.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_form" />
+            <field name="arch" type="xml">
+               <field name="date_invoice" position="before">
+                     <field name="month"/>
+               </field>
+               
+               <field name="payment_term_id" position="after">
+                     <field name="items"/>
+               </field>
+               
+            </field>
+        </record>
+  
+      <record id="view_invoice_list_fees_inherit" model="ir.ui.view">
+            <field name="name">account.invoice.list.inherit</field>
+            <field name="model">account.invoice</field>
+            <field name="inherit_id" ref="account.invoice_tree" />
+            <field name="arch" type="xml">
+
+               <field name="date_invoice" position="after">
+                    <field name="items"/>
+                            
+                     
+               </field>
+               
+               <field name="date_invoice" position="before">
+                     <field name="month"/>
+               </field> 
+            </field>
+       </record>
+  
+
+  </data>
+</odoo>
